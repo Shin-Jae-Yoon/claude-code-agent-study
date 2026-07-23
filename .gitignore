@@ -1,0 +1,5 @@
+# macOS
+.DS_Store
+
+# oh-my-claudecode 운영 상태 (커밋 대상 아님)
+.omc/
