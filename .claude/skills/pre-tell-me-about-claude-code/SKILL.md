@@ -1,5 +1,5 @@
 ---
-name: tell-me-about-claude-code
+name: pre-tell-me-about-claude-code
 description: 입력한 Claude Code 키워드·기능을 공식문서(code.claude.com/docs) 근거로 한국어로 설명한다
 argument-hint: "[키워드 (예: remote control, hooks, 서브에이전트)]"
 disable-model-invocation: true

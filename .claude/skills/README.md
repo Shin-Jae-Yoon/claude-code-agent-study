@@ -24,24 +24,25 @@
 |------|---------|
 | `pre-chapter-prep` | 본인 챕터 노트 → 개인 정리본 md + 발표 html 한 장 (역질문 게이트) |
 | `pre-chapter-ideas` | 다음 챕터 개념 → 실습 주제 후보 추천 + 3인 분배 |
+| `pre-tell-me-about-claude-code` | 발표 전 확인할 Claude Code 키워드를 공식문서 근거로 한국어 설명 |
 
 ### `mid-*` 모임 중 (팀)
 
 | 스킬 | 하는 일 |
 |------|---------|
 | `mid-chapter-merge` | 개인 정리본 3개 → 그 주 챕터 결과물 (README + 통합 발표 html) |
+| `mid-zettelkasten-synthesis` | 챕터별 개인 정리본 → 저장소 전체에서 누적·연결되는 원자 메모와 주제 지도 |
+| `mid-study-deep-dive` | 챕터 결과물 → 이해 질문·토론거리·최신 변경점·공식 레퍼런스 |
 | `mid-study-wrapup` | 발표·토의 회의록 → 마지막 10분 회고 베이스 (개인 사실·성찰·액션 + 팀 KPT) |
+| `mid-update-claude-code-docs` | 모임 중 공식 What's New 주차 다이제스트 축적 |
 
-> 위 4개는 홍섭이 `members/hongseob/`에서 만든 걸 접두사 붙여 승격한 것. 팀 논의로 계속 다듬는다.
+> `pre-chapter-prep`, `pre-chapter-ideas`, `mid-chapter-merge`, `mid-study-wrapup`은 홍섭이 만든 스킬을 승격한 것이다. `mid-zettelkasten-synthesis`와 `mid-study-deep-dive`는 재윤이 추가했고, `pre-tell-me-about-claude-code`와 `mid-update-claude-code-docs`는 준호가 만든 스킬에 스터디 시점 접두사를 적용했다. 모두 팀 논의로 계속 다듬는다.
 
 ### 상시 (모임과 무관 · 접두사 없음)
 
 | 스킬 | 하는 일 |
 |------|---------|
-| `tell-me-about-claude-code` | 키워드를 공식문서 근거로 한국어 설명 (`/tell-me-about-claude-code <키워드>`) |
-| `update-claude-code-docs` | 공식 What's New 주차 다이제스트 축적 (`/update-claude-code-docs`) |
-
-> 준호가 만든 슬래시 전용(`disable-model-invocation`) 스킬. 특정 모임 시점에 안 묶여 접두사 없이 이동. `update-claude-code-docs` 출력은 `members/junho/docs/claude-code-updates/`에 그대로 쌓인다.
+| `sync-claude-skills-to-codex` | `.claude`의 모든 스킬을 Codex 형식으로 변환해 `.codex/skills`와 동기화 |
 
 ## 구조
 
@@ -51,6 +52,8 @@
     SKILL.md      # 모임 전 스킬
   mid-<skill-name>/
     SKILL.md      # 모임 중 스킬
+  <skill-name>/
+    SKILL.md      # 상시 스킬
 ```
 
 ## 승격 절차

@@ -53,9 +53,9 @@
 
 논의로 추린 스킬을 [`.claude/skills/`](./.claude/skills/)에 모임 전(`pre-`) / 모임 중(`mid-`) / 상시로 나눠 둡니다. 상세·사용법은 링크 참고.
 
-- **모임 전** — `pre-chapter-prep`(챕터 노트 → 정리본 md + 발표 html), `pre-chapter-ideas`(챕터 → 실습 주제 후보)
-- **모임 중** — `mid-chapter-merge`(3인 정리본 → 그 주 결과물), `mid-study-wrapup`(회의록 → 회고 베이스)
-- **상시** — `tell-me-about-claude-code`(키워드 공식문서 설명), `update-claude-code-docs`(주차별 업데이트 축적)
+- **모임 전** — `pre-chapter-prep`(개인 정리·발표 준비), `pre-chapter-ideas`(실습 주제 후보), `pre-tell-me-about-claude-code`(키워드 공식문서 확인)
+- **모임 중** — `mid-chapter-merge`(3인 정리본 통합), `mid-zettelkasten-synthesis`(인사이트 연결), `mid-study-deep-dive`(질문·최신 동향), `mid-study-wrapup`(회고), `mid-update-claude-code-docs`(주차별 업데이트 축적)
+- **상시** — `sync-claude-skills-to-codex`(Claude 스킬을 Codex 형식으로 동기화)
 
 ## 커리큘럼
 

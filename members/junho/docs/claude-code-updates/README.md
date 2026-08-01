@@ -1,6 +1,6 @@
 # Claude Code 업데이트 기록
 
-`/update-claude-code-docs` 로 공식 [What's New](https://code.claude.com/docs/en/whats-new) 를 수집한 기록. 기준일 **2026-05-21** 이후 주차만 담는다.
+`/mid-update-claude-code-docs` 로 공식 [What's New](https://code.claude.com/docs/en/whats-new) 를 수집한 기록. 기준일 **2026-05-21** 이후 주차만 담는다.
 
 | 주차 | 기간 | 릴리스 | 주요 기능 |
 |------|------|--------|-----------|
