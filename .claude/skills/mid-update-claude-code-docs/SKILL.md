@@ -1,5 +1,5 @@
 ---
-name: update-claude-code-docs
+name: mid-update-claude-code-docs
 description: Claude Code 공식 What's New 주차 다이제스트를 확인해, 아직 문서화되지 않은 주차만 한국어 md로 members/junho/docs/claude-code-updates/ 에 추가한다
 argument-hint: "[시작 주차/날짜 (기본: 2026-w21)]"
 disable-model-invocation: true
@@ -50,7 +50,7 @@ Claude Code 신규 기능·업데이트를 공식문서에서 수집해 한국�
 ```markdown
 # Claude Code 업데이트 기록
 
-`/update-claude-code-docs` 로 공식 [What's New](https://code.claude.com/docs/en/whats-new) 를 수집한 기록. 기준일 2026-05-21 이후.
+`/mid-update-claude-code-docs` 로 공식 [What's New](https://code.claude.com/docs/en/whats-new) 를 수집한 기록. 기준일 2026-05-21 이후.
 
 | 주차 | 기간 | 릴리스 | 주요 기능 |
 |------|------|--------|-----------|
