@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ch2 — 워크플로와 설정 · 통합 발표</title>
+<style>
+  :root{
+    --bg:#0e1116; --panel:#161b22; --panel2:#1c2230; --line:#2a3240;
+    --txt:#e6edf3; --mut:#9aa7b5; --accent:#7ee787; --blue:#79c0ff; --amber:#f2cc60; --pink:#ff9bce;
+    --jae:#79c0ff; --hong:#7ee787;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    line-height:1.65;font-size:16px}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+  header.hero{padding:28px 24px;border:1px solid var(--line);border-radius:16px;
+    background:linear-gradient(135deg,#161b22,#1c2230)}
+  .kick{color:var(--mut);font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 6px}
+  h1{margin:0 0 10px;font-size:30px;line-height:1.25}
+  .lead{color:var(--mut);margin:0;font-size:15px}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .flow span{background:#0d1117;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--blue)}
+  .flow b{color:var(--mut);align-self:center;font-size:12px}
+  h2.section{margin:44px 0 16px;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);
+    border-bottom:1px solid var(--line);padding-bottom:8px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 20px 8px;overflow-wrap:break-word}
+  .card.jae{border-top:3px solid var(--jae)}
+  .card.hong{border-top:3px solid var(--hong)}
+  .who{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+  .who .name{font-size:19px;font-weight:700}
+  .card.jae .name{color:var(--jae)} .card.hong .name{color:var(--hong)}
+  .who .role{font-size:12.5px;color:var(--mut)}
+  .card ul{margin:10px 0 14px;padding-left:18px}
+  .card li{margin:7px 0;font-size:14.5px}
+  .card li b{color:var(--txt)}
+  code{background:#0d1117;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12.5px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--amber)}
+  .lenses{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .lens{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .lens h3{margin:0 0 4px;font-size:16px}
+  .lens .sub{color:var(--mut);font-size:12.5px;margin:0 0 10px}
+  .lens.common h3{color:var(--accent)}
+  .lens.interest h3{color:var(--blue)}
+  .lens.split h3{color:var(--amber)}
+  .lens.dig h3{color:var(--pink)}
+  .lens ul{margin:0;padding-left:18px}
+  .lens li{margin:8px 0;font-size:14px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:5px;margin-right:6px;vertical-align:1px}
+  .tag.jae{background:rgba(121,192,255,.16);color:var(--jae)}
+  .tag.hong{background:rgba(126,231,135,.16);color:var(--hong)}
+  .tag.team{background:rgba(242,204,96,.16);color:var(--amber)}
+  footer{margin-top:44px;color:var(--mut);font-size:12.5px;border-top:1px solid var(--line);padding-top:16px}
+  footer a{color:var(--blue)}
+  @media(max-width:760px){
+    .cards,.lenses{grid-template-columns:1fr}
+    h1{font-size:24px}
+    .wrap{padding:20px 14px 60px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="kick">Chapter 2 · 통합 발표</p>
+    <h1>워크플로와 설정</h1>
+    <p class="lead">개인 정리본(재윤·홍섭)을 4개 고정 렌즈로 종합 · 이번 주 병합 참여 2인 (준호 2장 정리본 없음)</p>
+    <div class="flow">
+      <span>탐색</span><b>→</b><span>계획</span><b>→</b><span>구현</span><b>→</b><span>검증</span><b>→</b><span>커밋</span><b>↻ 반복</b>
+    </div>
+  </header>
+
+  <h2 class="section">참여자별 · 원문 보존</h2>
+  <div class="cards">
+    <div class="card jae">
+      <div class="who"><span class="name">재윤</span><span class="role">탐색→계획→구현→검증 워크플로 + 도구·확장 지형도</span></div>
+      <ul>
+        <li><b>중심 메시지</b> — 좋은 결과는 <code>탐색→계획→구현→검증→커밋</code>에서. 검증 결과에 따라 앞 단계로 되돌아 반복.</li>
+        <li><b>탐색</b> — "전체 설명" 대신 <code>Glob/Grep → Read → 실행 흐름</code>으로 범위를 좁혀 컨텍스트 절약.</li>
+        <li><b>세 도구 지형도</b> (경쟁 아님, 서로 다른 병목):
+          <b>Graphify</b>=코드+문서 지식 그래프(AST 로컬, 관계 근거 <code>EXTRACTED/INFERRED</code>),
+          <b>CodeGraph</b>=에이전트용 SQLite 코드 인덱스(호출 경로·blast radius, MCP),
+          <b>Ouroboros</b>=명세 우선 계획 도구(소크라테스 질문, Ambiguity <code>≤0.2</code>).</li>
+        <li><b>계획·구현</b> — 플랜 모드(<code>--permission-mode plan</code>, <code>Shift+Tab</code>), 점진 개발 3축, TDD, <code>/compact</code>·<code>/clear</code>, worktree.</li>
+        <li><b>확장 도구</b> — Skill=<b>지식 확장</b> / 서브에이전트=<b>능력 확장</b> / MCP / Hooks / Plugins(배포 단위).</li>
+        <li><b>실측 관점</b> — 이 저장소 settings 대부분 비어 있음(<code>{}</code>) → 각 개념을 "지금 어디에 도입할지" 위치로 매핑.</li>
+      </ul>
+    </div>
+    <div class="card hong">
+      <div class="who"><span class="name">홍섭</span><span class="role">워크플로 실측 + 설정·환경변수 실전</span></div>
+      <ul>
+        <li><b>워크플로 핵심</b> — <code>탐색→분석→심화</code>. 앞 단계 결과를 다음 입력으로. 사례: <code>@경로</code> vs 풀경로 토큰 실측 <b>10,500 vs 175</b>.</li>
+        <li><b>settings 임의 key 실험(실측)</b> — 미정의 key를 넣어도 <b>거부 없이 무시되고 실행</b>(exit 0). "strict" 문서 표현과 실제 동작의 간극. <code>$schema</code>로 편집 단계에서 잡음.</li>
+        <li><b>점진 개발 단위</b> — 정량("몇 줄")보다 <b>atomic sub-requirement</b>. 핵심: <b>"좋은 프롬프트보다 좋은 피드백 루프가 더 중요"</b>.</li>
+        <li><b>settings 위계(실측)</b> — 관리자 &gt; CLI 인자 &gt; 로컬 &gt; 프로젝트 &gt; 사용자. 위가 이김.</li>
+        <li><b>스프링부트 <code>.env</code> 문제 정답</b> — 원인 이중(셸도 스프링도 <code>.env</code> 자동 로드 안 함). 정답은 <code>settings.json</code>의 <code>env</code> → 모든 subprocess에 OS 환경변수 주입. <b>yaml 수정 아님</b>.</li>
+        <li><b>실전 2안</b> — A) <code>settings.local.json</code> env 이관(이중 관리) vs <b>B) 빌드 명령 <code>set -a; . ./.env; set +a</code>(추천)</b>. <code>CLAUDE.md</code> 규칙으로 자동화.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section">4 렌즈 · 종합</h2>
+  <div class="lenses">
+    <div class="lens common">
+      <h3>공통</h3>
+      <p class="sub">둘 다 짚은 것</p>
+      <ul>
+        <li>단계형 워크플로 + <b>앞 단계 → 다음 단계 이월</b> (재윤 탐색→계획→구현→검증 / 홍섭 탐색→분석→심화)</li>
+        <li>점진 개발과 <b>피드백 루프</b>의 중요성 (재윤 3축·TDD / 홍섭 "프롬프트보다 피드백 루프")</li>
+        <li><code>settings.json</code> 설정 위계 — 관리자 &gt; 프로젝트 &gt; 로컬 &gt; 사용자, 구체적·상위가 덮어씀</li>
+        <li><code>env</code> 키로 환경변수 주입 (재윤 후보 항목 / 홍섭 스프링부트 정답)</li>
+        <li><code>CLAUDE.md</code> / <code>CLAUDE.local.md</code> / <code>~/.claude/CLAUDE.md</code> 3계층</li>
+        <li><code>.env</code>·민감값 보호 (재윤 <code>permissions.deny</code>·Bash 우회 / 홍섭 gitignore·커밋 금지)</li>
+      </ul>
+    </div>
+    <div class="lens interest">
+      <h3>흥미로운 것</h3>
+      <p class="sub">인상 깊었던 개념·경험 (누가)</p>
+      <ul>
+        <li><span class="tag hong">홍섭</span>임의 key를 넣어도 거부 없이 무시되고 실행된다는 실측 — 문서 "strict"와 실제의 간극</li>
+        <li><span class="tag hong">홍섭</span><code>.env</code> 문제의 이중 원인(셸+스프링)과 "yaml 수정이 아니라 OS 환경변수 주입" 통찰</li>
+        <li><span class="tag hong">홍섭</span><code>@경로</code> vs 풀경로 토큰 실측(10,500 vs 175)으로 워크플로 뒷받침</li>
+        <li><span class="tag jae">재윤</span>세 도구를 "경쟁" 아닌 <b>서로 다른 병목</b>으로 배치한 프레이밍</li>
+        <li><span class="tag jae">재윤</span>Ouroboros 수치 종료 조건(Ambiguity ≤0.2 등)이 <b>내부 운영 기준</b>임을 명시한 태도</li>
+        <li><span class="tag jae">재윤</span>Skill=지식 확장 / 서브에이전트=능력 확장 구분</li>
+      </ul>
+    </div>
+    <div class="lens split">
+      <h3>갈린 관점</h3>
+      <p class="sub">같은 걸 다르게 봄</p>
+      <ul>
+        <li><b>워크플로 단계 명명</b> — 재윤: 계획·검증을 명시적 단계로(플랜 모드·TDD) / 홍섭: 분석·심화에 압축</li>
+        <li><b>점진 개발 단위</b> — 홍섭: 정량 기준에 회의적(atomic sub-requirement) / 재윤: 3축으로 절차화</li>
+        <li><b><code>env</code>를 다루는 깊이</b> — 홍섭: 실전 결론까지(A vs B, B 추천) / 재윤: 개념 소개 + 충돌 우선순위는 <b>열린 질문</b>으로</li>
+      </ul>
+    </div>
+    <div class="lens dig">
+      <h3>팀이 더 팔 것</h3>
+      <p class="sub">미해결·궁금 (역질문 모음)</p>
+      <ul>
+        <li><span class="tag hong">홍섭</span>다들 얼마나 작은 단위로? 정량 기준 두나? 어떤 자동 검증 수단?</li>
+        <li><span class="tag jae">재윤</span>셸 환경변수 vs <code>settings.json env</code> <b>충돌 시 우선순위</b></li>
+        <li><span class="tag jae">재윤</span><code>think</code>/<code>ultrathink</code>/<code>MAX_THINKING_TOKENS</code> 현재 동작·권장 사용법</li>
+        <li><span class="tag jae">재윤</span>자동 압축(<code>/compact</code>)의 예약 토큰 수치</li>
+        <li><span class="tag jae">재윤</span>도구별 기본 승인 여부</li>
+        <li><span class="tag jae">재윤</span>원격 분석의 기본값과 비활성화 방식</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    출처: 공식문서 <code>code.claude.com/docs/en/settings</code> ·
+    <a href="https://github.com/Graphify-Labs/graphify">Graphify</a> ·
+    <a href="https://github.com/colbymchenry/codegraph">CodeGraph</a> ·
+    <a href="https://github.com/Q00/ouroboros/blob/main/README.ko.md">Ouroboros</a> ·
+    <a href="https://github.com/oraios/serena">Serena</a><br>
+    각 도구의 성능 수치·임계값은 해당 프로젝트 자체 문서 기준이며 업계 표준·보장으로 해석하지 않는다.
+  </footer>
+
+</div>
+</body>
+</html>
