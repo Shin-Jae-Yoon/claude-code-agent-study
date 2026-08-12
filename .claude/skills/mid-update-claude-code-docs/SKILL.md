@@ -1,6 +1,6 @@
 ---
 name: mid-update-claude-code-docs
-description: Claude Code 공식 What's New 주차 다이제스트를 확인해, 아직 문서화되지 않은 주차만 한국어 md로 members/junho/docs/claude-code-updates/ 에 추가한다
+description: Claude Code 공식 What's New 주차 다이제스트를 확인해, 아직 문서화되지 않은 주차만 한국어 md로 insight/claude-code-updates/ 에 추가한다
 argument-hint: "[시작 주차/날짜 (기본: 2026-w21)]"
 disable-model-invocation: true
 allowed-tools: WebFetch(domain:code.claude.com) Read Write Edit Glob Bash(date +%F)
@@ -8,7 +8,7 @@ allowed-tools: WebFetch(domain:code.claude.com) Read Write Edit Glob Bash(date +
 
 Claude Code 신규 기능·업데이트를 공식문서에서 수집해 한국어 md로 축적한다.
 
-- 출력 디렉토리: `${CLAUDE_PROJECT_DIR}/members/junho/docs/claude-code-updates/`
+- 출력 디렉토리: `${CLAUDE_PROJECT_DIR}/insight/claude-code-updates/` — 개인 폴더(`members/<이름>/`)가 아니라 팀 공용 `insight/` 아래에 쌓는다.
 - 기본 기준일: **2026-05-21** (= Week 21, 5/18~22 부터)
 - 인자: `$ARGUMENTS` — 주차(`2026-w25`) 또는 날짜(`2026-06-01`). 있으면 그 시점 이후만 수집한다.
 - 오늘 날짜: !`date +%F`

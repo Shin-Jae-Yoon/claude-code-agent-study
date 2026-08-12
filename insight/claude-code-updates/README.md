@@ -4,6 +4,8 @@
 
 | 주차 | 기간 | 릴리스 | 주요 기능 |
 |------|------|--------|-----------|
+| [Week 32](2026-w32.md) | 2026-08-03 ~ 08-07 | v2.1.220 → v2.1.224 | 세션 간 메시지, 자체 호스팅 환경, auto mode 기본값화 |
+| [Week 30](2026-w30.md) | 2026-07-20 ~ 07-24 | v2.1.214 → v2.1.219 | Claude Opus 5, Desktop iOS 시뮬레이터, Claude Security 플러그인 |
 | [Week 29](2026-w29.md) | 2026-07-13 ~ 07-17 | v2.1.207 → v2.1.212 | Artifacts 가 MCP 커넥터 호출, 스크린 리더 모드 |
 | [Week 28](2026-w28.md) | 2026-07-06 ~ 07-10 | v2.1.202 → v2.1.206 | Desktop 내장 브라우저, `/doctor` 전체 설정 점검 |
 | [Week 27](2026-w27.md) | 2026-06-29 ~ 07-03 | v2.1.195 → v2.1.201 | Claude Sonnet 5, Claude in Chrome GA, 서브에이전트 기본 백그라운드 |
@@ -13,5 +15,7 @@
 | [Week 23](2026-w23.md) | 2026-06-01 ~ 06-05 | v2.1.158 → v2.1.165 | 서드파티 프로바이더 auto mode, 자동 편집 안전장치, `/plugin list` |
 | [Week 22](2026-w22.md) | 2026-05-25 ~ 05-29 | v2.1.150 → v2.1.157 | Claude Opus 4.8, dynamic workflows, security-guidance 플러그인 |
 | [Week 21](2026-w21.md) | 2026-05-18 ~ 05-22 | v2.1.143 → v2.1.149 | Auto mode Pro 플랜 지원, `/code-review`, `/usage` 상세 분석 |
+
+Week 31(2026-07-27 ~ 07-31)은 공식 What's New 인덱스에 항목이 없어 비어 있다.
 
 버그 픽스 단위까지는 담지 않는다. 필요하면 각 문서 상단 릴리스 범위로 [changelog](https://code.claude.com/docs/en/changelog) 를 확인한다.
