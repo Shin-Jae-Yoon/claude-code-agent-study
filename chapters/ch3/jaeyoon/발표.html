@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chapter 3 · 에이전트 스킬</title>
+  <style>
+    :root {
+      --ink: #17201c;
+      --muted: #66716a;
+      --paper: #f4f1e8;
+      --card: rgba(255, 255, 255, 0.78);
+      --line: rgba(23, 32, 28, 0.13);
+      --green: #1d6b50;
+      --green-soft: #d8ebdf;
+      --orange: #c76236;
+      --orange-soft: #f5dfd2;
+      --blue: #315c88;
+      --blue-soft: #dce8f3;
+      --plum: #7b4a6e;
+      --plum-soft: #ecdcE8;
+      --shadow: 0 20px 55px rgba(35, 48, 41, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(199, 98, 54, 0.12), transparent 27rem),
+        radial-gradient(circle at 88% 24%, rgba(29, 107, 80, 0.12), transparent 30rem),
+        radial-gradient(circle at 50% 82%, rgba(49, 92, 136, 0.09), transparent 32rem),
+        var(--paper);
+      font-family: Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+      line-height: 1.72;
+      letter-spacing: -0.015em;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .progress {
+      position: fixed;
+      inset: 0 auto auto 0;
+      z-index: 30;
+      width: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--orange), var(--green));
+    }
+
+    main { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    section { padding: 80px 0; border-bottom: 1px solid var(--line); }
+    section:last-child { border-bottom: 0; }
+
+    /* ---------- hero ---------- */
+    .hero {
+      min-height: 92vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding-top: 46px;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 16px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      font-size: 0.83rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      margin: 24px 0 6px;
+      font-size: clamp(2.5rem, 7vw, 4.4rem);
+      line-height: 1.14;
+      letter-spacing: -0.04em;
+    }
+    .hero .sub { margin: 0 0 30px; color: var(--muted); font-size: clamp(1rem, 2.4vw, 1.2rem); }
+    .thesis {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 26px 28px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--green);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      text-align: left;
+    }
+    .thesis .label { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; color: var(--green); text-transform: uppercase; }
+    .thesis p.big { margin: 8px 0 12px; font-size: clamp(1.2rem, 3.1vw, 1.65rem); font-weight: 800; line-height: 1.42; letter-spacing: -0.03em; }
+    .thesis p.small { margin: 0; color: var(--muted); font-size: 0.96rem; }
+    .hero-meta { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .chip {
+      padding: 6px 14px; border-radius: 999px; font-size: 0.83rem; font-weight: 700;
+      background: var(--card); border: 1px solid var(--line); color: var(--muted);
+    }
+
+    /* ---------- headings ---------- */
+    .kicker { font-size: 0.79rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange); margin: 0 0 6px; }
+    h2 { margin: 0 0 10px; font-size: clamp(1.65rem, 4.2vw, 2.3rem); letter-spacing: -0.035em; line-height: 1.24; }
+    h3 { margin: 34px 0 12px; font-size: clamp(1.12rem, 2.6vw, 1.32rem); letter-spacing: -0.028em; }
+    .lead { margin: 0 0 24px; color: var(--muted); max-width: 74ch; font-size: 1.02rem; }
+
+    /* ---------- generic cards ---------- */
+    .grid { display: grid; gap: 18px; }
+    .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+      padding: 22px 22px 20px; box-shadow: var(--shadow);
+    }
+    .card h4 { margin: 0 0 8px; font-size: 1.02rem; letter-spacing: -0.025em; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+    .card ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.92rem; }
+    .card li { margin: 4px 0; }
+    .card li strong, .card p strong { color: var(--ink); }
+
+    /* ---------- vs blocks (좌우 2열 대비) ---------- */
+    .vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: stretch; margin: 20px 0 0; }
+    .vs-mark {
+      align-self: center; font-weight: 900; font-size: 0.9rem; color: var(--muted);
+      background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+      width: 42px; height: 42px; display: grid; place-items: center; letter-spacing: 0;
+    }
+    .panel { border-radius: 18px; padding: 24px 22px; border: 1.5px solid; position: relative; overflow: hidden; }
+    .panel .tag {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 0.76rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .panel h4 { margin: 0 0 10px; font-size: 1.12rem; letter-spacing: -0.028em; }
+    .panel ul { margin: 0; padding-left: 18px; font-size: 0.93rem; }
+    .panel li { margin: 6px 0; }
+    .panel .metric { margin-top: 16px; padding-top: 14px; border-top: 1px dashed rgba(23,32,28,0.18); }
+    .panel .metric .num { display: block; font-size: clamp(1.35rem, 3.6vw, 1.85rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.2; }
+    .panel .metric .cap { font-size: 0.82rem; color: var(--muted); }
+
+    .p-cold { background: var(--orange-soft); border-color: rgba(199, 98, 54, 0.42); }
+    .p-cold .tag { background: rgba(199, 98, 54, 0.16); color: var(--orange); }
+    .p-cold .metric .num { color: var(--orange); }
+    .p-warm { background: var(--green-soft); border-color: rgba(29, 107, 80, 0.42); }
+    .p-warm .tag { background: rgba(29, 107, 80, 0.16); color: var(--green); }
+    .p-warm .metric .num { color: var(--green); }
+    .p-blue { background: var(--blue-soft); border-color: rgba(49, 92, 136, 0.4); }
+    .p-blue .tag { background: rgba(49, 92, 136, 0.16); color: var(--blue); }
+    .p-blue .metric .num { color: var(--blue); }
+
+    /* ---------- 3단계 로딩 ---------- */
+    .tier { border-radius: 18px; padding: 22px 20px; border: 1.5px solid; display: flex; flex-direction: column; }
+    .tier .n {
+      width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center;
+      font-weight: 900; font-size: 0.95rem; margin-bottom: 12px; color: #fff;
+    }
+    .tier h4 { margin: 0 0 4px; font-size: 1.05rem; letter-spacing: -0.028em; }
+    .tier .when { font-size: 0.84rem; color: var(--muted); margin: 0 0 12px; }
+    .tier .cost { margin-top: auto; padding-top: 14px; border-top: 1px dashed rgba(23,32,28,0.18); }
+    .tier .cost .num { display: block; font-size: 1.5rem; font-weight: 900; letter-spacing: -0.04em; }
+    .tier .cost .cap { font-size: 0.8rem; color: var(--muted); }
+    .t1 { background: rgba(199,98,54,0.12); border-color: rgba(199,98,54,0.4); }
+    .t1 .n { background: var(--orange); } .t1 .cost .num { color: var(--orange); }
+    .t2 { background: rgba(49,92,136,0.11); border-color: rgba(49,92,136,0.4); }
+    .t2 .n { background: var(--blue); } .t2 .cost .num { color: var(--blue); }
+    .t3 { background: rgba(29,107,80,0.12); border-color: rgba(29,107,80,0.4); }
+    .t3 .n { background: var(--green); } .t3 .cost .num { color: var(--green); }
+
+    /* ---------- code ---------- */
+    pre {
+      margin: 12px 0 0; padding: 16px 18px; border-radius: 13px; overflow-x: auto;
+      background: #1c241f; color: #e8ece7; font-size: 0.82rem; line-height: 1.62;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+    pre, code { font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace; }
+    pre .c { color: #8fa896; }
+    pre .k { color: #e6a86b; }
+    pre .s { color: #a9cf9a; }
+    code.inl {
+      background: rgba(23,32,28,0.075); padding: 2px 6px; border-radius: 6px;
+      font-size: 0.88em; border: 1px solid var(--line);
+    }
+
+    /* ---------- table ---------- */
+    .tw { overflow-x: auto; margin-top: 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); }
+    table { border-collapse: collapse; width: 100%; min-width: 540px; font-size: 0.9rem; }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: rgba(23,32,28,0.045); font-weight: 800; font-size: 0.85rem; letter-spacing: -0.01em; }
+    tr:last-child td { border-bottom: 0; }
+    td.ok { color: var(--green); font-weight: 700; }
+    td.no { color: var(--muted); }
+
+    /* ---------- callouts ---------- */
+    .callout {
+      margin-top: 18px; padding: 18px 20px; border-radius: 14px;
+      background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--blue);
+      font-size: 0.94rem;
+    }
+    .callout.warn { border-left-color: var(--orange); }
+    .callout.good { border-left-color: var(--green); }
+    .callout strong { letter-spacing: -0.02em; }
+    .callout p { margin: 0; }
+    .callout p + p { margin-top: 8px; }
+    .quote { color: var(--muted); font-style: italic; }
+
+    /* ---------- correction section ---------- */
+    .fix-wrap { margin-top: 22px; display: grid; gap: 20px; }
+    .fix {
+      background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+      overflow: hidden; box-shadow: var(--shadow);
+    }
+    .fix-head {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+      padding: 16px 22px; border-bottom: 1px solid var(--line);
+      background: rgba(199, 98, 54, 0.09);
+    }
+    .fix-head .no {
+      width: 30px; height: 30px; border-radius: 9px; background: var(--orange); color: #fff;
+      display: grid; place-items: center; font-weight: 900; font-size: 0.9rem; flex: none;
+    }
+    .fix-head h4 { margin: 0; font-size: 1.05rem; letter-spacing: -0.028em; }
+    .fix-body { padding: 20px 22px 22px; }
+    .fix .vs { margin-top: 0; }
+
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .badge { font-size: 0.79rem; font-weight: 700; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.7); color: var(--muted); }
+
+    /* ---------- refs ---------- */
+    .ref { display: flex; flex-direction: column; }
+    .ref .src { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+    .ref.official .src { color: var(--green); }
+    .ref.community .src { color: var(--plum); }
+    .ref .stat { font-size: 1.35rem; font-weight: 900; letter-spacing: -0.04em; margin: 6px 0 2px; }
+    .ref a { color: var(--blue); text-decoration: none; border-bottom: 1px solid rgba(49,92,136,0.35); word-break: break-all; font-size: 0.85rem; }
+
+    /* ---------- checklist / final ---------- */
+    .todo { display: grid; gap: 12px; margin-top: 18px; }
+    .todo-item {
+      display: grid; grid-template-columns: 38px 1fr; gap: 14px; align-items: start;
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px;
+    }
+    .todo-item .n { width: 30px; height: 30px; border-radius: 9px; background: var(--green); color: #fff; display: grid; place-items: center; font-weight: 900; font-size: 0.88rem; }
+    .todo-item h4 { margin: 0 0 3px; font-size: 0.99rem; letter-spacing: -0.025em; }
+    .todo-item p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    .closing {
+      text-align: center; padding: 40px 28px; border-radius: 20px;
+      background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow);
+      margin-top: 26px;
+    }
+    .closing p.big { margin: 0 0 10px; font-size: clamp(1.25rem, 3.4vw, 1.8rem); font-weight: 900; letter-spacing: -0.035em; line-height: 1.4; }
+    .closing p.small { margin: 0; color: var(--muted); }
+
+    footer { padding: 40px 0 60px; text-align: center; color: var(--muted); font-size: 0.86rem; }
+
+    /* ---------- reveal ---------- */
+    .rv { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+    .rv.in { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .g3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      section { padding: 58px 0; }
+      .g2, .g4 { grid-template-columns: 1fr; }
+      .vs { grid-template-columns: 1fr; }
+      .vs-mark { justify-self: center; transform: rotate(90deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .rv { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="progress" id="bar"></div>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div>
+      <span class="eyebrow">Chapter 3 · 재윤</span>
+      <h1>에이전트 스킬</h1>
+      <p class="sub">클로드의 기능을 확장하는 지식 모듈</p>
+
+      <div class="thesis">
+        <span class="label">중심 메시지</span>
+        <p class="big">스킬은 <strong>점진적 공개</strong>로 비용 없이 지식을 늘린다.</p>
+        <p class="small">
+          컨텍스트 윈도우는 공용 자산이다. 그런데 지식을 늘리면 컨텍스트를 먹는다 — 이 모순을 푸는 메커니즘이
+          점진적 공개(progressive disclosure)다. 쓰지 않는 지식의 비용은 <strong>0에 수렴한다.</strong>
+          토큰 비용 프레임워크, 최적화 5전략, 스크립트 우선, <code class="inl">context: fork</code>는 전부 이 한 문장을 실현하는 수단이다.
+        </p>
+      </div>
+
+      <div class="hero-meta">
+        <span class="chip">3단계 점진적 공개</span>
+        <span class="chip">토큰 비용 프레임워크</span>
+        <span class="chip">context: fork 격리 실행</span>
+        <span class="chip">공식문서 정정 3건</span>
+        <span class="chip">실측 · 2026-08-12</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 1. 점진적 공개 ============ -->
+  <section class="rv">
+    <p class="kicker">핵심 메커니즘</p>
+    <h2>세 단계 점진적 공개</h2>
+    <p class="lead">
+      스킬은 세 가지 유형의 콘텐츠를 <strong>단계적으로</strong> 로드한다. 필요하지 않은 콘텐츠가 컨텍스트 윈도우를
+      선점하는 것을 방지하기 위해서다. 핵심은 <strong>파일이 접근되기 전까지는 컨텍스트를 소비하지 않는다</strong>는 것.
+    </p>
+
+    <div class="grid g3">
+      <div class="tier t1">
+        <span class="n">1</span>
+        <h4>메타데이터</h4>
+        <p class="when">시작 시 자동 · 시스템 프롬프트</p>
+        <p style="margin:0;font-size:0.9rem;color:var(--muted)">프론트매터의 <code class="inl">name</code>과 <code class="inl">description</code>만 상주한다.</p>
+        <div class="cost">
+          <span class="num">~100 토큰</span>
+          <span class="cap">스킬당 고정 · 20개면 2,000토큰(전체의 1%)</span>
+        </div>
+      </div>
+      <div class="tier t2">
+        <span class="n">2</span>
+        <h4>지침</h4>
+        <p class="when">스킬 트리거 시 · Bash로 읽기</p>
+        <p style="margin:0;font-size:0.9rem;color:var(--muted)">SKILL.md 본문의 워크플로·유의사항·가이드라인 등 절차적 지식.</p>
+        <div class="cost">
+          <span class="num">~2,000 토큰</span>
+          <span class="cap">200줄(영문)/150줄(한국어) 이내 권장</span>
+        </div>
+      </div>
+      <div class="tier t3">
+        <span class="n">3</span>
+        <h4>리소스 / 코드</h4>
+        <p class="when">필요시 개별 접근</p>
+        <p style="margin:0;font-size:0.9rem;color:var(--muted)">지원 파일 — 문서, 스크립트, 템플릿, 참조 자료.</p>
+        <div class="cost">
+          <span class="num">사실상 무제한</span>
+          <span class="cap">접근 전까지 비용 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout good">
+      <p><strong>그래서 무엇이 가능해지나</strong> — 스킬에 포괄적인 API 문서, 대규모 데이터셋, 풍부한 예시를 포함하더라도
+      <strong>사용하지 않는 콘텐츠에 대한 컨텍스트 비용은 발생하지 않는다.</strong> 뒤에 나올 ECC의 286개 스킬이 이 원리의 극단 사례다.</p>
+    </div>
+
+    <h3>3단계 지원 파일의 세 종류</h3>
+    <div class="grid g3">
+      <div class="card">
+        <h4>📄 마크다운 문서</h4>
+        <p>전문화된 가이드와 워크플로. <code class="inl">FORMS.md</code>, <code class="inl">REFERENCE.md</code></p>
+      </div>
+      <div class="card">
+        <h4>⚙️ 실행 가능한 스크립트</h4>
+        <p>Bash로 실행되어 결정론적 작업 수행. <code class="inl">validate.py</code>, <code class="inl">fill_form.py</code></p>
+      </div>
+      <div class="card">
+        <h4>📚 참조 자료</h4>
+        <p>DB 스키마, API 문서, 템플릿, 예시</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. Commands vs Skills (2열 대비 #1) ============ -->
+  <section class="rv">
+    <p class="kicker">대비 ① · 호출 방식</p>
+    <h2>Commands vs Skills</h2>
+    <p class="lead">둘 다 <code class="inl">/이름</code>으로 부를 수 있지만, <strong>클로드가 알아서 꺼내 쓰느냐</strong>가 갈린다.</p>
+
+    <div class="vs">
+      <div class="panel p-blue">
+        <span class="tag">Commands</span>
+        <h4>사용자가 직접 선택</h4>
+        <ul>
+          <li><strong>수동 호출만</strong> — <code class="inl">/</code> 형태로 사용자가 고른다</li>
+          <li>위치: <code class="inl">.claude/commands/</code></li>
+          <li>명령당 마크다운 파일 하나</li>
+          <li>클로드는 이게 있는지도 신경 쓰지 않는다</li>
+        </ul>
+        <div class="metric">
+          <span class="num">사람이 판단</span>
+          <span class="cap">언제 쓸지를 사람이 안다는 전제</span>
+        </div>
+      </div>
+
+      <div class="vs-mark">VS</div>
+
+      <div class="panel p-warm">
+        <span class="tag">Skills</span>
+        <h4>클로드가 자동으로 찾아 사용</h4>
+        <ul>
+          <li><strong>자동 매칭 + 수동 호출</strong> 둘 다 가능</li>
+          <li>위치: <code class="inl">.claude/skills/&lt;이름&gt;/SKILL.md</code></li>
+          <li>디렉터리 단위 — 지원 파일 번들 가능</li>
+          <li><code class="inl">description</code>을 보고 활성화 여부를 <strong>클로드가 결정</strong></li>
+        </ul>
+        <div class="metric">
+          <span class="num">description이 8할</span>
+          <span class="cap">트리거를 못 쓰면 스킬은 없는 것과 같다</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>우리 저장소 실측</strong> — <code class="inl">.claude/commands/</code>는 프로젝트·사용자 어디에도 없다. 확장은 전부 스킬 쪽에 있다.
+      다만 스킬 9개 중 2개는 <code class="inl">disable-model-invocation: true</code>로 <strong>자동 호출을 끄고 수동 호출만 남겨</strong> Command처럼 쓴다.
+      (<code class="inl">mid-update-claude-code-docs</code>, <code class="inl">pre-tell-me-about-claude-code</code>)</p>
+    </div>
+  </section>
+
+  <!-- ============ 3. 구조와 프론트매터 ============ -->
+  <section class="rv">
+    <p class="kicker">구조</p>
+    <h2>스킬의 유형과 SKILL.md</h2>
+    <p class="lead">스킬은 <strong>메인(SKILL.md) + 서브(지원 파일)</strong>로 구성된다. 어디에 두느냐가 누가 쓸 수 있느냐를 결정한다.</p>
+
+    <div class="grid g3">
+      <div class="card">
+        <h4>개인 스킬</h4>
+        <p><code class="inl">~/.claude/skills/</code><br>개발자 개인의 모든 프로젝트</p>
+        <p style="margin-top:10px"><span class="badge" style="border-color:rgba(199,98,54,.4);color:var(--orange)">우리: 없음 (디렉터리 자체가 없다)</span></p>
+      </div>
+      <div class="card">
+        <h4>프로젝트 스킬</h4>
+        <p><code class="inl">.claude/skills/</code><br>저장소에 포함 → 팀과 공유·자동 배포</p>
+        <p style="margin-top:10px"><span class="badge" style="border-color:rgba(29,107,80,.4);color:var(--green)">우리: 9개 사용 중</span></p>
+      </div>
+      <div class="card">
+        <h4>플러그인 스킬</h4>
+        <p>플러그인에 번들 → 마켓플레이스로 설치</p>
+        <p style="margin-top:10px"><span class="badge" style="border-color:rgba(29,107,80,.4);color:var(--green)">우리: ouroboros@ouroboros v0.51.0</span></p>
+      </div>
+    </div>
+
+    <h3>프론트매터 — <code class="inl">description</code>이 유일한 필수</h3>
+    <div class="grid g2">
+      <div>
+        <pre><span class="c">---</span>
+<span class="k">name</span>: generating-commit-messages
+<span class="k">description</span>: git diff에서 명확한 커밋 메시지 생성.
+  커밋 메시지 작성 또는 스테이징된 변경 사항 검토 시 사용
+<span class="c">---</span>
+
+<span class="c"># 커밋 메시지 생성</span>
+
+<span class="c">## 지침</span>
+1. `git diff --staged` 실행
+2. 50자 미만의 요약, 상세 설명, 영향 구성 요소로 제안
+
+<span class="c">## 유의사항</span>
+- 현재형 사용
+- 무엇을 왜 설명, 어떻게가 아님</pre>
+      </div>
+      <div class="card">
+        <h4>규칙 세 가지</h4>
+        <ul>
+          <li><strong>name</strong> — 소문자·영숫자·하이픈, 최대 65자. <strong>동명사 권장</strong>
+            (<code class="inl">commit-helper</code> ✗ → <code class="inl">generating-commit-messages</code> ✓)</li>
+          <li><strong>description</strong> — <strong>기능 + 사용 트리거를 모두</strong> 포함. 최대 1,024자.
+            클로드가 이 필드만 보고 활성화를 결정한다.</li>
+          <li><strong>200줄 이내</strong> — 넘으면 스킬이 너무 많은 기능을 담았다는 신호. 분할하거나 <code class="inl">reference.md</code>로 분리 → SRP 유도</li>
+        </ul>
+        <div class="badge-row">
+          <span class="badge">allowed-tools</span>
+          <span class="badge">model</span>
+          <span class="badge">context</span>
+          <span class="badge">agent</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout good">
+      <p><strong>우리 저장소 실측</strong> — 9개 SKILL.md는 31~130줄로 <strong>전부 200줄 이내</strong>다.
+      <code class="inl">description</code>은 전부 기능 + 트리거 문구를 담고 있고, 일부는 <strong>부정 조건</strong>까지 붙였다:
+      <span class="quote">"단순 요약이나 출처 없는 브레인스토밍에는 사용하지 않는다"</span></p>
+    </div>
+  </section>
+
+  <!-- ============ 4. 토큰 비용 + 문서 vs 스크립트 (2열 대비 #2) ============ -->
+  <section class="rv">
+    <p class="kicker">비용</p>
+    <h2>토큰 비용 프레임워크</h2>
+    <p class="lead">
+      20만 토큰 기준 — 시스템 프롬프트·인프라가 1~2만, 대화 히스토리가 누적된다.
+      <strong>스킬에 실질적으로 쓸 수 있는 예산은 약 3만~5만 토큰.</strong> 이 안에서 가치를 극대화하는 게 목표다.
+    </p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>추정식</th><th>계산</th><th>우리 저장소 실측 대입</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1단계</strong></td><td>스킬 수 × 100토큰</td><td>9개 × 100 ≈ <strong>900토큰</strong></td></tr>
+          <tr><td><strong>2단계</strong></td><td>동시 활성화 수(1~3) × 평균 SKILL.md</td><td>이 발표를 만든 스킬 66줄 ≈ <strong>660토큰</strong></td></tr>
+          <tr><td><strong>3단계</strong></td><td>로드된 지원 파일 줄 수 × 10</td><td>(16+78+83) × 10 ≈ <strong>1,770토큰</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:12px;color:var(--muted);font-size:0.92rem">목표: 스킬 토큰 비용을 <strong>전체 컨텍스트의 15% 이내</strong>로 유지.</p>
+
+    <h3>대비 ② · 같은 검증 규칙, 두 가지 구현</h3>
+    <div class="vs">
+      <div class="panel p-cold">
+        <span class="tag">문서로 구현</span>
+        <h4>reference.md에 200줄</h4>
+        <ul>
+          <li>클로드가 <strong>읽는 순간 전문이 컨텍스트로</strong> 들어온다</li>
+          <li>규칙이 늘어날수록 비용이 선형 증가</li>
+          <li>판단은 매번 LLM이 다시 한다 → 비결정론적</li>
+        </ul>
+        <div class="metric">
+          <span class="num">~2,000 토큰</span>
+          <span class="cap">읽을 때마다 지불</span>
+        </div>
+      </div>
+
+      <div class="vs-mark">VS</div>
+
+      <div class="panel p-warm">
+        <span class="tag">스크립트로 구현</span>
+        <h4>scripts/validate_schema.py</h4>
+        <ul>
+          <li><strong>코드 자체는 컨텍스트에 들어가지 않는다</strong></li>
+          <li>Bash로 실행 → <strong>결과만</strong> 반영</li>
+          <li>같은 입력이면 같은 출력 → 결정론적</li>
+        </ul>
+        <div class="metric">
+          <span class="num">100~200 토큰</span>
+          <span class="cap">PASS/FAIL과 오류 메시지뿐</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>최적화 5전략</h3>
+    <div class="grid g3">
+      <div class="card"><h4>1. description 밀도</h4><p>100토큰 예산 안에서 <strong>발견 가능성</strong>을 최대화한다.</p></div>
+      <div class="card"><h4>2. 아는 건 빼기</h4><p>useState 사용법 같은 범용 지식은 제거. <strong>프로젝트 고유 컨벤션·팀 패턴·비공개 API 명세</strong>만 남기면 토큰 50~70% 절감.</p></div>
+      <div class="card"><h4>3. 도메인별 분리</h4><p>단, <strong>1단계 깊이만</strong> — 지원 파일이 또 다른 지원 파일을 부르면 부분적으로만 읽힐 위험.</p></div>
+      <div class="card"><h4>4. 예시 최적화</h4><p>예시 5개면 1,000~2,500토큰 = 예산의 20~50%. 대표 1~2개만 본문에, 나머지는 <code class="inl">EXAMPLES.md</code>로.</p></div>
+      <div class="card"><h4>5. 스크립트 우선</h4><p>복잡한 검증·변환·반복 처리는 <code class="inl">scripts/</code>로. 본문엔 <strong>사용법만</strong>(입력·출력·오류 처리).</p></div>
+      <div class="card" style="background:rgba(29,107,80,0.1);border-color:rgba(29,107,80,0.35)">
+        <h4>✅ 우리 실측</h4>
+        <p>전략 3 <strong>지켜짐</strong> — 지원 파일 간 로딩 체인 없음.<br>
+        전략 5 <strong>미적용</strong> — <code class="inl">scripts/</code>가 하나도 없다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. 개발 (Spring) ============ -->
+  <section class="rv">
+    <p class="kicker">개발</p>
+    <h2>커스텀 스킬 만들기</h2>
+    <p class="lead">① 목적 정의(범위·트리거·필요 도구) → ② SKILL.md 작성 → ③ 지원 파일 추가. 예시는 <strong>Java + Spring</strong> 기준.</p>
+
+    <div class="grid g2">
+      <div>
+        <h3 style="margin-top:0">SKILL.md — Spring REST 컨트롤러 생성</h3>
+        <pre><span class="c">---</span>
+<span class="k">name</span>: creating-spring-rest-controllers
+<span class="k">description</span>: Spring Boot REST 컨트롤러 생성, 요청/응답 DTO
+  정의, 계층 분리 구현. REST API 엔드포인트 작성 또는
+  리팩터링 시 사용
+<span class="k">allowed-tools</span>: Read, Write, Edit, Grep
+<span class="c">---</span>
+
+<span class="c"># Spring REST 컨트롤러 생성</span>
+
+<span class="c">## 핵심 원칙</span>
+생성자 주입만 사용하며, 요청·응답은 엔티티가 아닌
+DTO(record)로 주고받는다. 컨트롤러는 검증과 위임만 담당.
+
+<span class="c">## 네이밍 규칙</span>
+- 요청 DTO : &lt;동작&gt;&lt;도메인&gt;Request (e.g. UserCreateRequest)
+- 응답 DTO : &lt;도메인&gt;Response  (e.g. UserResponse)
+
+<span class="c">## 유의사항</span>
+- @RequestBody에는 @Valid, 제약은 DTO에 선언
+- 예외는 @RestControllerAdvice에서 일괄 변환
+- 트랜잭션은 Service 계층에만
+
+상세 패턴은 [reference.md](./reference.md) 참조
+템플릿은 [templates/Controller.java] 참조</pre>
+      </div>
+      <div>
+        <h3 style="margin-top:0">예시 세트 — API 문서화 스킬</h3>
+        <p style="color:var(--muted);font-size:0.93rem;margin:0 0 4px">
+          <strong>입력의 다양성</strong>(단순 → 복잡 → 엣지) + <strong>출력의 일관성</strong>(동일 형식·품질)이 좋은 예시 세트의 조건.
+        </p>
+        <pre><span class="c">### 예시 1: 간단한 GET</span>
+입력:
+<span class="k">@GetMapping</span>("/users/{userId}")
+public UserResponse getUser(<span class="k">@PathVariable</span> Long userId) {
+    return userService.findById(userId);
+}
+출력: <span class="s">GET /users/{userId}</span>
+  경로 파라미터 · userId (Long, required)
+  응답 · 200 조회 성공 / 404 없음
+
+<span class="c">### 예시 2: 요청 본문 있는 POST</span>
+입력:
+<span class="k">@PostMapping</span>("/users")
+<span class="k">@ResponseStatus</span>(HttpStatus.CREATED)
+public UserResponse createUser(
+    <span class="k">@RequestBody</span> <span class="k">@Valid</span> UserCreateRequest request) { ... }
+출력: <span class="s">POST /users</span>
+  응답 · 201 생성 / 400 검증 실패 / 409 이메일 중복
+
+<span class="c">### 예시 3: 인증 필요한 DELETE</span>
+입력:
+<span class="k">@DeleteMapping</span>("/users/{userId}")
+<span class="k">@PreAuthorize</span>("hasRole('ADMIN')")
+<span class="k">@ResponseStatus</span>(HttpStatus.NO_CONTENT)
+public void deleteUser(<span class="k">@PathVariable</span> Long userId, ...) { ... }
+출력: <span class="s">DELETE /users/{userId}</span>
+  인증 · Bearer 토큰 필수 (ADMIN)
+  응답 · 204 / 401 / 403 / 404</pre>
+      </div>
+    </div>
+
+    <h3>환각 방지 3종 세트</h3>
+    <div class="grid g3">
+      <div class="card">
+        <h4>① 불확실성 표현 허용</h4>
+        <p>"모르겠다"라고 답하도록 <strong>명시적으로 허용</strong>한다.<br>
+        <span class="quote">"이 설정값은 공식 문서에서 확인이 필요합니다."</span></p>
+        <p style="margin-top:8px"><strong>금지</strong>: 확인 안 된 버전 정보 단정, 테스트 안 한 기본값 제시, 추측 기반 에러 코드</p>
+      </div>
+      <div class="card">
+        <h4>② 지식 범위 제한</h4>
+        <p>참조 가능한 <strong>출처를 열거</strong>한다 — 프로젝트 소스, 의존성 파일, 내부 문서.</p>
+        <p style="margin-top:8px">밖의 정보가 필요하면 <span class="quote">"프로젝트 파일에서 확인되지 않습니다"</span>라고 명시하게 한다.</p>
+      </div>
+      <div class="card">
+        <h4>③ 출처 명시</h4>
+        <p>모든 기술 정보에 출처를 붙인다. 설정 옵션은 <strong>파일 경로:줄번호</strong>까지.</p>
+        <p style="margin-top:8px">사용자가 신뢰성을 <strong>직접 검증</strong>할 수 있게 된다.</p>
+      </div>
+    </div>
+
+    <div class="callout good">
+      <p><strong>이 발표 자료 자체가 ①의 사례다</strong> — <code class="inl">pre-chapter-prep</code> 스킬 규칙에
+      <span class="quote">"적용예시는 파일을 읽고 확인된 것만. 기억으로 쓰지 마라. 없으면 '아직 없음'으로."</span>가 박혀 있다.
+      그래서 정리본에 "아직 없음"이 반복해서 등장한다.</p>
+    </div>
+  </section>
+
+  <!-- ============ 6. context: fork (2열 대비 #3) ============ -->
+  <section class="rv">
+    <p class="kicker">대비 ③ · 고급 최적화</p>
+    <h2>context: fork — 격리 실행</h2>
+    <p class="lead">
+      기본적으로 스킬은 <strong>부모 대화의 컨텍스트 안에서</strong> 활성화된다. 대규모 코드베이스 분석처럼 토큰을 많이 쓰는 작업에선
+      이게 문제가 된다. <code class="inl">context: fork</code>는 스킬을 <strong>완전히 분리된 서브에이전트 컨텍스트</strong>에서 돌린다.
+    </p>
+
+    <div class="vs">
+      <div class="panel p-cold">
+        <span class="tag">포크 없음 (기본)</span>
+        <h4>탐색 과정이 부모 대화에 쌓인다</h4>
+        <ul>
+          <li>수백 개 파일 탐색의 <strong>중간 결과물</strong>(파일 내용, grep 결과)이 그대로 컨텍스트에 적재</li>
+          <li>대화 품질이 급격히 저하</li>
+          <li>plan 단계의 탐색이 run 단계 구현에 <strong>간섭</strong></li>
+        </ul>
+        <div class="metric">
+          <span class="num">30,000~50,000 토큰</span>
+          <span class="cap">부모 대화의 잔여 컨텍스트를 잠식</span>
+        </div>
+      </div>
+
+      <div class="vs-mark">VS</div>
+
+      <div class="panel p-warm">
+        <span class="tag">context: fork</span>
+        <h4>결과만 돌아온다</h4>
+        <ul>
+          <li>스킬 본문이 <strong>서브에이전트를 구동하는 프롬프트</strong>가 된다</li>
+          <li>부모 대화 히스토리에 <strong>접근 불가</strong></li>
+          <li>완료 시 <strong>결과만</strong> 부모 대화에 반환</li>
+        </ul>
+        <div class="metric">
+          <span class="num">1,000~2,000 토큰</span>
+          <span class="cap">최종 분석 요약만 반환</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:22px">
+      <div>
+        <pre><span class="c">---</span>
+<span class="k">name</span>: code-analysis
+<span class="k">description</span>: Analyze code quality and generate reports.
+  Use for comprehensive code review
+<span class="k">context</span>: fork
+<span class="k">agent</span>: Explore
+<span class="k">allowed-tools</span>:
+    - Read
+    - Grep
+    - Glob
+<span class="c">---</span></pre>
+        <p style="color:var(--muted);font-size:0.9rem;margin-top:10px">
+          <code class="inl">agent</code>는 <code class="inl">context: fork</code>일 때만 유의미하다.<br>
+          <strong>Explore</strong> 코드베이스 탐색 특화 읽기 전용 · <strong>Plan</strong> 컨텍스트 수집과 계획 수립 · <strong>general-purpose</strong> 기본값
+        </p>
+      </div>
+      <div class="card">
+        <h4>쓰기 좋은 곳 / 쓰면 안 되는 곳</h4>
+        <ul>
+          <li><strong>✅ 대규모 코드베이스 분석</strong> — 수만 토큰 탐색을 요약 하나로</li>
+          <li><strong>✅ 세션 격리 워크플로</strong> — SPEC 생성, TDD 사이클, 테스트 전략 수립</li>
+          <li><strong>❌ 부모 맥락이 필요한 스킬</strong> — 이전 대화, 사용자 선호도에 의존하는 작업</li>
+          <li><strong>❌ 소규모 작업</strong> — 서브에이전트 생성 오버헤드가 더 크다</li>
+        </ul>
+        <div class="callout warn" style="margin-top:14px">
+          <p><strong>공식문서 경고</strong> — <span class="quote">지침만 있고 수행할 task가 없는 스킬을 포크하면,
+          서브에이전트는 가이드라인만 받고 실행할 프롬프트가 없어 <strong>빈손으로 돌아온다.</strong></span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>우리 저장소 실측</strong> — <code class="inl">context: fork</code>·<code class="inl">agent</code>·<code class="inl">model</code>을 쓰는 스킬은 <strong>하나도 없다.</strong>
+      대신 <code class="inl">pre-chapter-prep</code>은 본문에 <span class="quote">"HTML 생성은 초점이 좁아 서브에이전트에 위임해도 좋다"</span>고
+      <strong>자연어로</strong> 적어 부분 격리한다.</p>
+      <p>이 스킬을 통째로 포크하면 안 되는 이유도 명확하다 — <strong>역질문 게이트(사람과의 대화)</strong>가 불가능해지기 때문이다.
+      대신 <strong><code class="inl">mid-zettelkasten-synthesis</code>를 도입 대상으로 확정</strong>했다. 저장소 전체를 훑는 대규모 탐색인 데다
+      "원자 메모와 주제 지도를 재구성하라"는 <strong>명확한 task</strong>가 있어 위 경고에도 걸리지 않는다.</p>
+    </div>
+  </section>
+
+  <!-- ============ 7. 공식문서 대조 (하이라이트) ============ -->
+  <section class="rv">
+    <p class="kicker">★ 발표 하이라이트</p>
+    <h2>교재와 공식문서가 다른 3가지</h2>
+    <p class="lead">
+      정리하면서 <a href="https://code.claude.com/docs/en/skills" style="color:var(--blue)">Claude Code 공식문서</a>를 대조했다(2026-08-12).
+      방향이 같은 것도 있고, <strong>정반대인 것도 있었다.</strong>
+    </p>
+
+    <div class="fix-wrap">
+
+      <!-- ① -->
+      <div class="fix">
+        <div class="fix-head">
+          <span class="no">1</span>
+          <h4>스킬 우선순위 — <strong>순서가 반대다</strong></h4>
+        </div>
+        <div class="fix-body">
+          <div class="vs">
+            <div class="panel p-cold">
+              <span class="tag">교재 노트</span>
+              <h4>project &gt; user &gt; managed</h4>
+              <ul><li>프로젝트 스킬이 개인 스킬을 이긴다</li></ul>
+            </div>
+            <div class="vs-mark">≠</div>
+            <div class="panel p-warm">
+              <span class="tag">공식문서</span>
+              <h4>enterprise &gt; personal &gt; project</h4>
+              <ul><li><strong>개인 스킬이 프로젝트 스킬을 이긴다</strong></li></ul>
+            </div>
+          </div>
+          <div class="callout warn">
+            <p><strong>실무 영향</strong> — 팀이 <code class="inl">.claude/skills/deploy</code>를 커밋해도,
+            팀원이 <code class="inl">~/.claude/skills/deploy</code>를 갖고 있으면 <strong>그 사람 로컬에선 개인 스킬이 실행된다.</strong>
+            팀 표준이 조용히 무력화될 수 있다.</p>
+            <p>단, <strong>플러그인 스킬은 <code class="inl">plugin-name:skill-name</code> 네임스페이스</strong>라 충돌하지 않는다.
+            Command와 Skill이 같은 이름이면 <strong>Skill이 우선</strong>(이건 노트와 일치).</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ② -->
+      <div class="fix">
+        <div class="fix-head">
+          <span class="no">2</span>
+          <h4><code class="inl">allowed-tools</code> — <strong>제한이 아니라 사전 승인이다</strong> (가장 중요)</h4>
+        </div>
+        <div class="fix-body">
+          <div class="vs">
+            <div class="panel p-cold">
+              <span class="tag">교재 노트</span>
+              <h4>도구를 제한한다</h4>
+              <ul>
+                <li>"파일 수정, 명령 실행 같은 위험한 작업이 <strong>원천 차단</strong>된다"</li>
+                <li>나열되지 않은 도구는 못 쓴다고 서술</li>
+                <li>읽기 전용 작업에 안전장치로 소개</li>
+              </ul>
+              <div class="metric">
+                <span class="num">safe-file-reader</span>
+                <span class="cap">…라는 이름의 예시는 실제로 안전하지 않다</span>
+              </div>
+            </div>
+
+            <div class="vs-mark">≠</div>
+
+            <div class="panel p-warm">
+              <span class="tag">공식문서</span>
+              <h4>도구를 사전 승인한다</h4>
+              <ul>
+                <li><span class="quote">"grants permission … so Claude can use them <strong>without prompting</strong>"</span></li>
+                <li><span class="quote">"<strong>It does not restrict</strong> which tools are available: <strong>every tool remains callable</strong>"</span></li>
+                <li>유효 범위는 <strong>호출한 그 턴에만</strong> — 다음 메시지에서 해제</li>
+                <li>진짜 제한은 <strong><code class="inl">disallowed-tools</code></strong></li>
+              </ul>
+              <div class="metric">
+                <span class="num">허용 ≠ 제한</span>
+                <span class="cap">읽기 전용 강제는 disallowed-tools나 권한 설정으로</span>
+              </div>
+            </div>
+          </div>
+          <div class="callout warn">
+            <p><strong>보안 함의</strong> — 공식문서는 이렇게 덧붙인다.
+            <span class="quote">"Review project skills before trusting a repository, since <strong>a skill can grant itself broad tool access.</strong>"</span></p>
+            <p>스킬을 <strong>PR로 주고받는 우리 팀에는 직접적인 리뷰 항목</strong>이다. 3장이 말한 "스킬 변경도 코드 리뷰하라"의 진짜 이유.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ -->
+      <div class="fix">
+        <div class="fix-head">
+          <span class="no">3</span>
+          <h4>SKILL.md 길이 — 임계값만 다르다</h4>
+        </div>
+        <div class="fix-body">
+          <div class="vs">
+            <div class="panel p-blue">
+              <span class="tag">교재 노트</span>
+              <h4>200줄 (한국어 150줄) 이내</h4>
+              <ul><li>넘으면 분할하거나 reference.md로 분리</li></ul>
+            </div>
+            <div class="vs-mark">vs</div>
+            <div class="panel p-warm">
+              <span class="tag">공식문서</span>
+              <h4>under 500 lines</h4>
+              <ul><li><span class="quote">"Move detailed reference material to separate files."</span></li></ul>
+            </div>
+          </div>
+          <div class="callout good">
+            <p>방향(상세 자료는 별도 파일로)은 같고 숫자만 다르다. <strong>노트 쪽이 더 보수적이므로 노트 기준을 지키면 공식 기준도 자동 충족.</strong>
+            우리 9개는 31~130줄로 양쪽 다 통과.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3>덤 — 노트에 없던 최신 사항</h3>
+    <div class="grid g2">
+      <div class="card">
+        <h4>⏳ 스킬 콘텐츠 생명주기 (점진적 공개의 이면)</h4>
+        <p><span class="quote">"the rendered SKILL.md content enters the conversation as a single message and <strong>stays there for the rest of the session</strong>"</span></p>
+        <ul>
+          <li>노트는 "필요할 때 로드된다"까지만 다룬다. 실제로는 <strong>한 번 로드되면 세션 내내 남는다</strong> → 2단계는 일회성이 아니라 <strong>누적 고정비</strong></li>
+          <li>그래서 공식 권고가 <span class="quote">"every line is a recurring token cost"</span></li>
+          <li>자동 압축 시 스킬당 앞 <strong>5,000토큰</strong>, 합산 <strong>25,000토큰</strong> 예산으로 재부착</li>
+          <li><code class="inl">allowed-tools</code> 승인은 콘텐츠와 달리 <strong>다음 메시지에 해제</strong></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🧾 노트에 없는 프론트매터 필드</h4>
+        <ul>
+          <li><code class="inl">when_to_use</code> — 트리거 문구를 description에 덧붙임</li>
+          <li><code class="inl">disallowed-tools</code> — <strong>진짜 도구 제한</strong></li>
+          <li><code class="inl">background</code> — fork 전용, 기본 <code class="inl">true</code>(백그라운드 실행)</li>
+          <li><code class="inl">effort</code> — 추론 강도 (low~max)</li>
+          <li><code class="inl">paths</code> — glob 매칭 시에만 자동 로드</li>
+          <li><code class="inl">hooks</code>, <code class="inl">arguments</code>, <code class="inl">user-invocable: false</code></li>
+        </ul>
+        <p style="margin-top:10px"><strong>1단계 예산도 설정 가능</strong> — description+when_to_use는 <strong>1,536자</strong>에서 잘리므로
+        <strong>핵심 사용 사례를 맨 앞에</strong>. 목록 예산은 <code class="inl">skillListingBudgetFraction</code>으로 조정.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8. 외부 레퍼런스 ============ -->
+  <section class="rv">
+    <p class="kicker">생태계</p>
+    <h2>남들은 이 장을 어떻게 실천하나</h2>
+    <p class="lead">전부 2026-08-12 확인. 각 프로젝트가 자체 문서에서 밝힌 수치이며 독립 검증된 값은 아니다.</p>
+
+    <div class="grid g2">
+      <div class="card ref official">
+        <span class="src">공식 · 예제 저장소</span>
+        <h4>anthropics/skills</h4>
+        <p>교재가 <code class="inl">description</code> 예시로 든 <strong>PDF 스킬의 실물</strong>이 여기 있다.
+        문서 스킬(docx·pdf·pptx·xlsx)이 <code class="inl">scripts/</code> + <code class="inl">references/</code>를 갖춘 프로덕션급 예제로 제공된다.
+        <code class="inl">spec/</code>(Agent Skills 명세)과 <code class="inl">template/</code>도 함께.</p>
+        <p style="margin-top:10px"><strong>최소 요구사항은 여전히 SKILL.md 하나뿐</strong>이라는 점도 확인된다.</p>
+        <a href="https://github.com/anthropics/skills">github.com/anthropics/skills</a>
+      </div>
+
+      <div class="card ref official">
+        <span class="src">공식문서 · 스크립트 우선의 실물</span>
+        <h4>codebase-visualizer</h4>
+        <p>교재 "코드 실행 통합"을 그대로 구현한 공식 예제. 대화형 HTML 트리뷰를 만든다.</p>
+        <pre style="font-size:0.76rem"><span class="k">allowed-tools</span>: Bash(python3 *)
+---
+python3 ${CLAUDE_SKILL_DIR}/scripts/visualize.py .</pre>
+        <p style="margin-top:10px"><strong>SKILL.md에는 사용법만, 스크립트 코드는 컨텍스트에 안 들어간다.</strong>
+        <code class="inl">${CLAUDE_SKILL_DIR}</code> 덕분에 개인·프로젝트·플러그인 어디에 깔려도 경로가 풀린다.
+        Python 내장 라이브러리만 써서 설치할 패키지도 없다.</p>
+      </div>
+
+      <div class="card ref community">
+        <span class="src">커뮤니티 · 점진적 공개의 극단</span>
+        <h4>ECC — Everything Claude Code</h4>
+        <p class="stat">286 스킬 · 68 에이전트 · 94 커맨드</p>
+        <p><strong>스킬을 286개 깔아도 세션이 안 터지는 이유가 정확히 이 장의 주제다.</strong>
+        1단계 메타데이터만 상주하고 본문은 on-demand로 로드되기 때문.</p>
+        <p style="margin-top:10px"><span class="quote">"Keeping those jobs separate is how ECC adds capability
+        <strong>without dumping the entire repository into every session</strong>."</span><br>
+        표어도 <span class="quote">"Optimize the context window. Persist everything else."</span></p>
+        <p style="margin-top:10px">대표 스킬: <code class="inl">tdd-workflow</code>, <code class="inl">security-review</code>, <code class="inl">e2e-testing</code>, <code class="inl">search-first</code>.
+        Claude Code·Codex·Cursor·OpenCode에서 함께 동작 — 우리가 <code class="inl">.codex/skills</code>를 미러링하는 것과 같은 문제의식.</p>
+        <a href="https://github.com/affaan-m/ecc">github.com/affaan-m/ecc</a>
+      </div>
+
+      <div class="card ref community">
+        <span class="src">커뮤니티 · 스킬 + 멀티에이전트</span>
+        <h4>OMC — oh-my-claudecode</h4>
+        <p class="stat">19 에이전트 · 39 스킬</p>
+        <p>Claude·Gemini·Codex를 함께 굴리는 오케스트레이션 플러그인. 이 장과 관련해 볼 두 가지:</p>
+        <ul>
+          <li><strong>자체 스코프</strong> — <code class="inl">.omc/skills/</code>(프로젝트) / <code class="inl">~/.omc/skills/</code>(사용자). 교재의 2단 구조와 같은 발상</li>
+          <li><strong><code class="inl">triggers</code> 배열</strong> — 교재가 "고유 트리거 용어를 description에 넣어라"라고 한 걸 <strong>별도 필드로 분리</strong></li>
+        </ul>
+        <pre style="font-size:0.76rem"><span class="k">name</span>: Fix Proxy Crash
+<span class="k">description</span>: aiohttp proxy crashes on ClientDisconnectedError
+<span class="k">triggers</span>: [<span class="s">"proxy"</span>, <span class="s">"aiohttp"</span>, <span class="s">"disconnected"</span>]
+<span class="k">source</span>: extracted</pre>
+        <a href="https://github.com/Yeachan-Heo/oh-my-claudecode">github.com/Yeachan-Heo/oh-my-claudecode</a>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <p><strong>주의</strong> — ECC와 OMC는 공식 Anthropic 산출물이 아니라 서드파티 커뮤니티 플러그인이다.
+      앞의 정정 ②에서 봤듯 <strong>스킬은 스스로에게 넓은 도구 권한을 부여할 수 있으므로</strong>, 설치 전 스킬 내용을 검토해야 한다.</p>
+    </div>
+  </section>
+
+  <!-- ============ 9. 우리 시스템 실측 ============ -->
+  <section class="rv">
+    <p class="kicker">실측 · 2026-08-12</p>
+    <h2>내 클로드 시스템은 지금 어디까지 와 있나</h2>
+    <p class="lead">기억이 아니라 <strong>파일을 직접 읽어</strong> 확인한 값이다.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>항목</th><th>상태</th><th>확인 위치</th></tr></thead>
+        <tbody>
+          <tr><td>개인 스킬</td><td class="no">없음 (디렉터리 자체가 없다)</td><td><code class="inl">~/.claude/skills/</code></td></tr>
+          <tr><td>프로젝트 스킬</td><td class="ok">9개</td><td><code class="inl">.claude/skills/</code></td></tr>
+          <tr><td>플러그인 스킬</td><td class="ok">ouroboros@ouroboros v0.51.0</td><td><code class="inl">settings.json</code> enabledPlugins</td></tr>
+          <tr><td>Commands</td><td class="no">없음 (프로젝트·사용자 모두)</td><td>—</td></tr>
+          <tr><td>SKILL.md 길이</td><td class="ok">31~130줄 · 전부 200줄 이내</td><td>9개 파일</td></tr>
+          <tr><td>description 트리거 명시</td><td class="ok">전부 적용 (일부는 부정 조건까지)</td><td>9개 프론트매터</td></tr>
+          <tr><td>allowed-tools</td><td class="ok">2개 (도메인·명령 단위 사전 승인)</td><td>tell-me-about, update-docs</td></tr>
+          <tr><td>disallowed-tools <em>(진짜 제한)</em></td><td class="no">없음</td><td>—</td></tr>
+          <tr><td>references/ (3단계)</td><td class="ok">3개 스킬 · 16·78·83줄</td><td>deep-dive, zettelkasten, sync-codex</td></tr>
+          <tr><td>1단계 깊이 유지</td><td class="ok">지켜짐 (지원 파일 간 로딩 체인 없음)</td><td><code class="inl">references/*.md</code></td></tr>
+          <tr><td>조건부 로딩 문구</td><td class="ok">적용 — "관련 렌즈만 골라"</td><td><code class="inl">mid-study-deep-dive/SKILL.md:21</code></td></tr>
+          <tr><td>scripts/ · templates/</td><td class="no">없음</td><td>—</td></tr>
+          <tr><td>입출력 예시 세트</td><td class="no">없음 (절차 지침 중심)</td><td>—</td></tr>
+          <tr><td>context: fork · agent · model</td><td class="no">없음</td><td>—</td></tr>
+          <tr><td>Version History</td><td class="no">없음 (Git 커밋으로 대체)</td><td>—</td></tr>
+          <tr><td>팀 표준 · 리뷰 프로세스</td><td class="ok">문서화됨 (접두사 + 승격 4단계 + PR)</td><td><code class="inl">.claude/skills/README.md</code></td></tr>
+          <tr><td>Codex 미러</td><td class="ok">9개 동기화</td><td><code class="inl">.codex/skills/</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout good">
+      <p><strong>한 줄 요약</strong> — <strong>1·2단계(메타데이터·지침)는 교재 기준을 잘 지키고 있고,
+      3단계(스크립트·템플릿·예시 세트)와 격리 실행(<code class="inl">context: fork</code>)은 아직 비어 있다.</strong></p>
+    </div>
+
+    <h3>잘하고 있는 것 — 팀 스킬 개발</h3>
+    <div class="grid g3">
+      <div class="card">
+        <h4>표준화된 구조</h4>
+        <p><code class="inl">.claude/skills/README.md</code>가 <code class="inl">pre-</code>/<code class="inl">mid-</code>/접두사 없음 규칙을 명문화.
+        <strong>폴더 대신 접두사를 쓴 이유</strong>까지 적혀 있다 — 스킬 탐색은 한 단계만 보기 때문.</p>
+      </div>
+      <div class="card">
+        <h4>리뷰 프로세스</h4>
+        <p>승격 4단계: 개인 제작 → 모임 논의 → 접두사 붙여 이동 → <strong>PR로 통합</strong>.
+        실제로 <code class="inl">#7</code>, <code class="inl">#8</code> PR 병합 이력이 남아 있다.</p>
+      </div>
+      <div class="card">
+        <h4>문서화 분리</h4>
+        <p>4개 스킬이 <code class="inl">SKILL.md</code>와 별도로 <code class="inl">README.md</code>를 갖는다 —
+        <strong>지침(클로드용)과 설명(사람용)의 분리.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10. 정리 ============ -->
+  <section class="rv">
+    <p class="kicker">정리</p>
+    <h2>다음에 만들 것</h2>
+    <p class="lead">실측에서 비어 있던 4칸을 채운다.</p>
+
+    <div class="todo">
+      <div class="todo-item">
+        <span class="n">1</span>
+        <div>
+          <h4><code class="inl">sync-claude-skills-to-codex</code>에 <code class="inl">scripts/</code> 도입</h4>
+          <p>변환 규칙이 결정론적인데 지금은 매번 LLM이 수행한다. 스크립트로 옮기면 실행 결과(변환 파일 목록 + PASS/FAIL)만 컨텍스트에 남는다.</p>
+        </div>
+      </div>
+      <div class="todo-item">
+        <span class="n">2</span>
+        <div>
+          <h4><code class="inl">mid-zettelkasten-synthesis</code>에 <code class="inl">context: fork</code></h4>
+          <p>저장소 전체 탐색이라 포크 이득이 크고, 명확한 task가 있어 공식문서 경고에 걸리지 않는다.</p>
+        </div>
+      </div>
+      <div class="todo-item">
+        <span class="n">3</span>
+        <div>
+          <h4>범용 유틸리티 스킬을 <code class="inl">~/.claude/skills/</code>에 신설</h4>
+          <p>현재 개인 스킬 디렉터리 자체가 없다. Java/Spring 코드 리뷰처럼 프로젝트와 무관한 것부터.
+          <strong>단, 정정 ①의 함정 주의</strong> — 개인 스킬이 프로젝트 스킬을 덮어쓰므로 <code class="inl">pre-</code>/<code class="inl">mid-</code>와 겹치는 이름은 금물.</p>
+        </div>
+      </div>
+      <div class="todo-item">
+        <span class="n">4</span>
+        <div>
+          <h4>기존 스킬에 <code class="inl">EXAMPLES.md</code> 보강</h4>
+          <p>"다양한 입력 + 일관된 출력" 예시 세트가 전무하다. 3단계 파일로 분리하면 <strong>비용 없이</strong> 품질을 올릴 수 있다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="closing">
+      <p class="big">스킬은 점진적 공개로 비용 없이 지식을 늘린다.</p>
+      <p class="small">
+        1단계 메타데이터만 상주하고, 본문은 부를 때, 지원 파일은 읽을 때, 스크립트는 결과만.<br>
+        ECC가 스킬 286개를 깔고도 세션이 멀쩡한 이유이고 — 우리가 아직 <code class="inl">scripts/</code>와 <code class="inl">context: fork</code>를 안 써서
+        <strong>남겨둔 여지</strong>이기도 하다.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    Chapter 3 · 에이전트 스킬 — 재윤 &nbsp;·&nbsp; 실측 기준일 2026-08-12<br>
+    출처: 내 클로드 시스템 실측 · <a href="https://code.claude.com/docs/en/skills" style="color:var(--blue)">code.claude.com/docs/en/skills</a> ·
+    anthropics/skills · affaan-m/ecc · Yeachan-Heo/oh-my-claudecode
+  </footer>
+
+</main>
+
+<script>
+  (function () {
+    var bar = document.getElementById('bar');
+    function onScroll() {
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      var p = max > 0 ? (h.scrollTop || document.body.scrollTop) / max : 0;
+      bar.style.width = (p * 100).toFixed(2) + '%';
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    var items = document.querySelectorAll('.rv');
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
+    items.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+</body>
+</html>
