@@ -81,5 +81,7 @@ chapters/ch1~ch7/    # 교재 장별 학습 메모·실습
 members/<이름>/      # 각자 제작한 플러그인/스킬 (개인 작업 공간)
 .claude/skills/      # 논의로 추린 공통 스킬 (팀 전체 사용)
 insight/             # AI·에이전틱 코딩 인사이트 메모·공유
+deep-dive/           # 챕터 결과물을 질문·최신 근거로 확장한 조사 문서
+zettelkasten/        # 챕터를 넘어 연결되는 원자 메모·주제 지도
 meeting-notes/       # Gemini 회의록
 ```
