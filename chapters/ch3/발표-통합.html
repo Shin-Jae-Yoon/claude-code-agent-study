@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ch3 — 에이전트 스킬 · 통합 발표</title>
+<style>
+  :root{
+    --bg:#0e1116; --panel:#161b22; --panel2:#1c2230; --line:#2a3240;
+    --txt:#e6edf3; --mut:#9aa7b5;
+    --accent:#7ee787; --blue:#79c0ff; --amber:#f2cc60; --pink:#ff9bce; --red:#ff7b72;
+    --hong:#7ee787; --jae:#79c0ff; --jun:#d2a8ff;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    line-height:1.65;font-size:16px}
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 20px 80px}
+  a{color:var(--blue)}
+
+  header.hero{padding:28px 24px;border:1px solid var(--line);border-radius:16px;
+    background:linear-gradient(135deg,#161b22,#1c2230)}
+  .kick{color:var(--mut);font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 6px}
+  h1{margin:0 0 10px;font-size:30px;line-height:1.25}
+  .lead{color:var(--mut);margin:0;font-size:15px}
+  .who-line{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .who-line span{background:#0d1117;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px}
+  .who-line .h{color:var(--hong)} .who-line .j{color:var(--jae)} .who-line .u{color:var(--jun)}
+
+  h2.section{margin:48px 0 16px;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);
+    border-bottom:1px solid var(--line);padding-bottom:8px}
+  h2.section em{font-style:normal;text-transform:none;letter-spacing:0;color:#6f7b8a;font-size:13px;margin-left:8px}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 20px 10px;overflow-wrap:break-word}
+  .card.hong{border-top:3px solid var(--hong)}
+  .card.jae{border-top:3px solid var(--jae)}
+  .card.jun{border-top:3px solid var(--jun)}
+  .who{margin-bottom:6px}
+  .who .name{font-size:19px;font-weight:700;display:block}
+  .card.hong .name{color:var(--hong)} .card.jae .name{color:var(--jae)} .card.jun .name{color:var(--jun)}
+  .who .role{font-size:12.5px;color:var(--mut);display:block;margin-top:2px}
+  .card ul{margin:12px 0 14px;padding-left:17px}
+  .card li{margin:8px 0;font-size:14px}
+  .card li b{color:var(--txt)}
+
+  code{background:#0d1117;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12.5px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--amber);overflow-wrap:break-word}
+
+  .quote{border-left:3px solid var(--line);margin:10px 0;padding:2px 0 2px 12px;color:var(--mut);font-size:13.5px}
+
+  .lenses{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  .lens{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .lens h3{margin:0 0 4px;font-size:16.5px}
+  .lens .sub{color:var(--mut);font-size:12.5px;margin:0 0 12px}
+  .lens.common h3{color:var(--accent)}
+  .lens.interest h3{color:var(--blue)}
+  .lens.dig h3{color:var(--pink)}
+  .lens ul{margin:0;padding-left:17px}
+  .lens li{margin:9px 0;font-size:14px}
+
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:5px;margin-right:6px;vertical-align:1px;white-space:nowrap}
+  .tag.hong{background:rgba(126,231,135,.16);color:var(--hong)}
+  .tag.jae{background:rgba(121,192,255,.16);color:var(--jae)}
+  .tag.jun{background:rgba(210,168,255,.16);color:var(--jun)}
+  .tag.team{background:rgba(242,204,96,.16);color:var(--amber)}
+  .tag.cross{background:rgba(255,155,206,.16);color:var(--pink)}
+
+  /* 갈린 관점 — 나란히 대비 */
+  .split{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+  .split > h3{margin:0 0 4px;font-size:17px;color:var(--amber)}
+  .split > .sub{color:var(--mut);font-size:13px;margin:0 0 14px}
+  .vs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .vs.two{grid-template-columns:1fr 1fr}
+  .col{background:#0d1117;border:1px solid var(--line);border-radius:11px;padding:14px 15px}
+  .col.hong{border-top:2px solid var(--hong)}
+  .col.jae{border-top:2px solid var(--jae)}
+  .col.jun{border-top:2px solid var(--jun)}
+  .col .head{font-size:13px;font-weight:700;margin-bottom:8px}
+  .col.hong .head{color:var(--hong)} .col.jae .head{color:var(--jae)} .col.jun .head{color:var(--jun)}
+  .col .stance{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:5px;
+    background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);margin-bottom:8px}
+  .col p{margin:6px 0 0;font-size:13.5px;color:var(--mut)}
+  .col p b{color:var(--txt)}
+  .verdict{margin-top:14px;padding:11px 14px;background:rgba(242,204,96,.07);border:1px solid rgba(242,204,96,.25);
+    border-radius:9px;font-size:13.5px;color:var(--txt)}
+  .verdict b{color:var(--amber)}
+
+  .callout{background:rgba(255,123,114,.07);border:1px solid rgba(255,123,114,.3);border-radius:12px;
+    padding:16px 18px;margin:18px 0}
+  .callout h3{margin:0 0 8px;font-size:16px;color:var(--red)}
+  .callout p{margin:6px 0;font-size:14px}
+  .callout .fix{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  .callout .fix > div{background:#0d1117;border:1px solid var(--line);border-radius:9px;padding:12px 14px;font-size:13.5px}
+  .callout .fix .bad{border-left:3px solid var(--red)}
+  .callout .fix .good{border-left:3px solid var(--accent)}
+  .callout .fix .lbl{display:block;font-size:11.5px;font-weight:700;letter-spacing:.06em;margin-bottom:5px;color:var(--mut)}
+
+  footer{margin-top:52px;color:var(--mut);font-size:12.5px;border-top:1px solid var(--line);padding-top:16px}
+  footer p{margin:6px 0}
+
+  @media(max-width:980px){
+    .cards,.vs{grid-template-columns:1fr}
+    .lenses{grid-template-columns:1fr}
+  }
+  @media(max-width:760px){
+    .callout .fix,.vs.two{grid-template-columns:1fr}
+    h1{font-size:24px}
+    .wrap{padding:24px 16px 60px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="kick">Chapter 3 · 통합 발표</p>
+    <h1>에이전트 스킬 — 3인 정리본 통합</h1>
+    <p class="lead">개인 정리본 3개를 4개 고정 렌즈(공통 · 흥미로운 것 · 갈린 관점 · 팀이 더 팔 것)로 종합했다. 개인 통찰은 원문 그대로 보존한다.</p>
+    <div class="who-line">
+      <span class="h">홍섭 — 커맨드/스킬 통합의 실체 + 팀 배포 실사례</span>
+      <span class="j">재윤 — 점진적 공개 + 공식문서 대조</span>
+      <span class="u">준호 — 스킬 운영·배포·측정 레퍼런스</span>
+    </div>
+  </header>
+
+  <h2 class="section">참여자별 <em>원문 보존</em></h2>
+  <div class="cards">
+
+    <div class="card hong">
+      <div class="who"><span class="name">홍섭</span><span class="role">커맨드/스킬 통합의 실체 + 팀 배포(nova-workflow)</span></div>
+      <ul>
+        <li><b>통합의 실체 = 호출 방식 통합</b>(확정). 둘 다 같은 <code>SKILL.md</code> 포맷을 쓰고 <code>/슬래시</code>와 자연어 양쪽을 지원한다. 성격은 <code>disable-model-invocation</code> 유무로 갈린다.</li>
+        <li><b>발표 대비축</b>: 커맨드(화이트박스 — 사람이 직접 지정) vs 스킬(블랙박스 — 클로드가 자동 선택).</li>
+        <li><b>실측</b>: nova의 <code>commit</code>·<code>pr</code>·<code>handoff</code>는 <code>disable-model-invocation</code> + <code>argument-hint</code> → 커맨드형. <code>humanize-korean</code>은 트리거 문구를 잔뜩 넣어 "AI 티 없애줘"만으로 발동 → 스킬형.</li>
+        <li><b>스킬 유형 3종을 전부 실물로 보유</b> — 로컬(<code>~/.claude/skills/*</code>) / 프로젝트(이 레포) / <b>팀 배포</b>: 회사 개발팀에 만들어 준 <b>nova-workflow 플러그인, 18개 스킬 마켓플레이스 배포</b>.</li>
+        <li><b><code>name</code> 동명사 규칙은 공식 강제가 아니다</b>(조사 확정). 게다가 <code>name</code>은 <b>디스플레이 라벨</b>이고 실제 커맨드명은 <b>디렉토리 이름</b>에서 온다. 동사형(<code>commit</code>, <code>pr</code>)도 정상.</li>
+        <li><b>분량 = SRP로 해석.</b> <code>pre-chapter-prep</code> 66줄, <code>nova-api-planner</code> 68줄 양호 / <b><code>humanize-korean</code> 257줄 초과 — 오케스트레이터라 길어짐, 리팩터 후보로 스스로 지목.</b></li>
+        <li><b>지원 파일 역할</b>: <code>references/</code>(필요할 때만 로드) · <code>scripts/</code>(결과만 컨텍스트에) · <code>templates/</code>(산출물 뼈대). 공통 규칙은 도메인 분리 · 깊이 1단계 · 중첩 참조 금지.</li>
+        <li><b>실측</b>: <code>references/</code> + <code>evals/</code>는 마케팅 스킬군에 있음. <code>scripts/</code>·<code>templates/</code>는 <b>플러그인 루트에만</b> 있고 스킬 안엔 <code>admin-guide-writer</code> 하나뿐 → "references 위주, script/template 활용이 약하다".</li>
+        <li><b><code>context</code>/<code>agent</code>/<code>background</code> 3필드 실체 확인.</b> <code>agent</code>는 <code>Explore</code>/<code>Plan</code>/<code>general-purpose</code>. 적절 = 초점 좁고 산출물만 필요한 작업 / 부적절 = 메인 맥락을 계속 왕복하는 작업. <b>도입 후보: <code>pre-chapter-prep</code>의 HTML 생성 단계.</b></li>
+        <li><b>토큰 5원칙</b>: description 압축 / 범용 지식 빼기(50~70% 절감) / 도메인 분리 1단계 / 예시는 <code>EXAMPLES.md</code>로(예시가 토큰의 20~50%) / 로직은 스크립트로.</li>
+        <li><b>Q1 · E2E 테스트 스킬화</b> → <b>스킬화 O, 단 env 값은 스킬에 안 넣는다.</b> 절차는 <code>SKILL.md</code>, 값은 <code>settings.local.json</code>. <code>settings.json</code>의 <code>env</code>가 정답(모든 세션 자동 적용). 우선순위 <b>Local > Project > User</b>.</li>
+        <li><b>Q2 · 토큰 15% 모니터링</b> → <code>/context</code>의 <b>Skills row</b>로 점유 확인, <b>statusline</b>에 컨텍스트 바 상시 표시.</li>
+      </ul>
+    </div>
+
+    <div class="card jae">
+      <div class="who"><span class="name">재윤</span><span class="role">점진적 공개로 비용 없이 지식 늘리기 + 공식문서 대조</span></div>
+      <ul>
+        <li><b>중심 메시지 — 스킬은 점진적 공개로 비용 없이 지식을 늘린다.</b> 전제는 "컨텍스트 윈도우는 공용 자산". 토큰 프레임워크 · 최적화 5전략 · 스크립트 우선 · <code>context: fork</code>는 전부 이 한 문장의 수단.</li>
+        <li><b>3단계</b>: 메타데이터(상시, ~100토큰) / 지침(트리거 시) / 지원 파일(필요시). 핵심은 <b>접근 전까지 컨텍스트를 소비하지 않는다</b>.</li>
+        <li><b>비용 프레임워크</b>: 20만 윈도우에서 스킬 예산 <b>3만~5만 토큰</b>, 목표 <b>15% 이내</b>. 추정식 <code>1단계 = 스킬 수 × 100</code>, <code>3단계 = 로드된 줄 수 × 10</code>.</li>
+        <li><b>추정식에 자기 실측치 대입</b> — 1단계 9개 × 100 ≈ 900토큰, 2단계 66줄 ≈ 660토큰, 3단계 (16+78+83)줄 × 10 ≈ 1,770토큰.</li>
+        <li><b>실측 요약</b>: 개인 스킬 <b>없음</b>(디렉터리 자체 없음) / 프로젝트 <b>9개</b>, 31~130줄 전부 200줄 이내 / 플러그인 <code>ouroboros</code> v0.51.0 활성 / <b><code>scripts/</code>·<code>templates/</code>·<code>context: fork</code>·예시 세트 전부 없음.</b> → <b>1·2단계는 기준을 지키고, 3단계와 격리 실행은 비어 있다.</b></li>
+        <li><b><code>context: fork</code></b>: 포크 없이 30,000~50,000토큰 → 포크하면 <b>요약 1,000~2,000토큰만</b> 부모로.</li>
+        <li><b>판단</b>: <code>pre-chapter-prep</code> 전체를 포크하면 <b>역질문 게이트(사람과의 대화)가 불가능</b>해진다 → 부적합. 대신 <b><code>mid-zettelkasten-synthesis</code>를 도입 대상으로 확정</b>(대규모 탐색 + 명확한 task).</li>
+        <li><b>공식문서 대조 3건 ★</b> — ① 우선순위가 반대(<code>enterprise > personal > project</code>) ② <b><code>allowed-tools</code>는 제한이 아니라 사전 승인</b> ③ 200줄 vs 500줄.</li>
+        <li><b>덤</b>: 스킬 콘텐츠는 한 번 로드되면 <b>세션 끝까지 남는다</b> → 2단계는 일회성이 아닌 <b>누적 고정비</b>. description + <code>when_to_use</code>는 합산 1,536자에서 잘림.</li>
+        <li><b>외부 레퍼런스 4종</b>: anthropics/skills · 공식 <code>codebase-visualizer</code>(SKILL.md엔 사용법만, 스크립트 코드는 컨텍스트에 안 들어감) · <b>ECC 286 스킬</b> · OMC의 <code>triggers</code> 배열.</li>
+        <li><b>교재 예시를 Java + Spring으로 변환</b> — 리액트 컴포넌트 스킬 → <code>creating-spring-rest-controllers</code>, API 문서화 → <code>@GetMapping</code>/<code>@PostMapping</code>/<code>@PreAuthorize</code> 3단 세트. 난이도 배치는 원문 유지.</li>
+      </ul>
+    </div>
+
+    <div class="card jun">
+      <div class="who"><span class="name">준호</span><span class="role">스킬 운영·배포·측정 레퍼런스</span></div>
+      <ul>
+        <li><b>한눈에</b>: 스킬은 폴더다 / 커스텀 커맨드는 스킬로 통합됐다(신규는 무조건 스킬) / 차이는 frontmatter 두 필드 / 점진적 공개가 핵심 설계 / <b>만드는 것보다 측정이 어렵다.</b></li>
+        <li><b>스킬만 되는 것</b>: 딸린 파일, 중첩 디렉터리 자동 탐색, <code>--add-dir</code> 로드, 플러그인 패키징. <b>이름 충돌 시 스킬이 이긴다.</b></li>
+        <li><b>호출 제어 두 필드</b>: <code>disable-model-invocation</code>(나만 호출 — 부수 효과로 <b>목록에서 빠져 컨텍스트 비용도 준다</b>) / <code>user-invocable: false</code>(클로드만). <b>주의: <code>user-invocable</code>은 UI 설정이라 자율 실행을 못 막는다.</b></li>
+        <li><b>스킬이 많아지면 description이 잘린다.</b> 리스팅 예산은 윈도우의 <b>1%</b>, 넘치면 <b>덜 쓰는 스킬의 description부터 통째로 사라진다</b>(이름만 남음). → <code>/doctor</code>, <code>skillListingBudgetFraction</code>, <code>skillOverrides: name-only</code>.</li>
+        <li><b>우선순위 <code>enterprise > personal > project</code></b>. 플러그인은 <code>plugin:skill</code> 네임스페이스라 충돌 없음. 프로젝트 스킬 탐색은 상위 방향(루트까지) + 하위 방향(그 디렉터리 파일을 다룰 때 로드).</li>
+        <li><b>⚠️ Cowork·클라우드 세션은 로컬 <code>~/.claude/skills/</code>를 읽지 않는다.</b> 개인 스킬만 만들어두면 웹에선 "스킬을 찾을 수 없다"가 된다.</li>
+        <li><b>SKILL.md는 한 번 호출되면 세션 끝까지 남고 다시 읽지 않는다</b> → 본문 한 줄이 <b>반복되는 상주 비용</b>. 작업 내내 적용될 내용은 절차가 아니라 <b>상시 지침</b>처럼 쓴다.</li>
+        <li><b>참조는 한 단계만</b>(또 참조하면 <code>head -100</code> 식 부분 읽기로 정보가 불완전해진다), <b>100줄 넘는 참조엔 목차</b>.</li>
+        <li><b><code>scripts/</code>는 읽히는 게 아니라 실행된다.</b> <b>실행인지 참조인지 반드시 명시할 것</b> — 애매하면 통째로 읽어버려 토큰 이점이 사라진다.</li>
+        <li><b>자유도(degrees of freedom)</b>: 높음=서술형(코드 리뷰) / 중간=템플릿 / 낮음=정확한 스크립트(DB 마이그레이션). <span class="quote">양옆이 절벽인 좁은 다리에선 가드레일, 탁 트인 들판에선 방향만.</span></li>
+        <li><b>환각 방지</b>: 불확실성 허용은 <b>"말하지 마라"가 아니라 "표시하고 말하라"</b> / 출처 명시 + <b>사후 철회</b>(출처만 요구하면 출처를 지어내는 실패 모드가 남는다) / 구조 계열 <b>plan-validate-execute</b>.</li>
+        <li><b>Opus 5 — 두 방향이 반대다 ★</b>: 불확실성 지침은 <b>더 필요해졌고</b>(사실 주장 환각이 4.8보다 약간 더 많음), <b>검증 지시는 빼야 한다</b>(과잉 검증으로 토큰만 낭비). <b>유지 = 출력 규범 / 제거 = 절차 지시.</b></li>
+        <li><b><code>context: fork</code> 함정 2가지</b>: 백그라운드 포크는 <b>좁은 도구 집합</b>으로 돈다 / 백그라운드 포크의 편집은 <b>체크포인트 바깥이라 <code>/rewind</code>로 못 되돌린다</b>. <code>Explore</code>·<code>Plan</code>은 CLAUDE.md를 건너뛴다.</li>
+        <li><b><code>--debug</code>가 잡는 고약한 실패 ★</b>: YAML이 깨지면 <b>본문을 빈 메타데이터로 로드</b> → 직접 호출은 되는데 매칭할 description이 없다 → <b>"자동 발동만 안 된다"로 보여 오진하기 쉽다.</b></li>
+        <li><b>skill-creator — 만들었으면 측정하자.</b> 발동률과 출력 품질은 <b>스킬을 끈 상태와의 비교로만</b> 알 수 있다. Anthropic 자체 시험에서 <b>공개 스킬 6개 중 5개 트리거 개선.</b> OTEL <code>skill_activated</code>로 자동/수동 발동 비율 추적.</li>
+        <li><b>팀 배포 호환성 ★</b>: Claude Code 밖에선 <b>6개 필드만</b> 허용되고 <b>스펙 밖 필드는 무시가 아니라 하드 에러</b>. 개인 요금제라 조직 보안 스캐닝을 못 쓰면 <b>리뷰를 사람이 대신해야 한다.</b></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <h2 class="section">공통 <em>셋 다 짚은 것</em></h2>
+  <div class="lenses">
+    <div class="lens common">
+      <h3>메커니즘</h3>
+      <p class="sub">세 정리본이 독립적으로 같은 결론에 도달한 것</p>
+      <ul>
+        <li><b>커맨드와 스킬은 이미 통합됐고, 남은 차이는 "누가 호출하느냐" 하나다.</b> 셋 다 <code>disable-model-invocation</code>을 성격 구분자로 지목 — 홍섭은 "통합의 실체", 준호는 두 필드 표, 재윤은 이 저장소 스킬 2개가 이미 그렇게 쓰인다는 실측으로.</li>
+        <li><b>점진적 공개 3단계 — 읽히지 않은 파일은 토큰을 0 쓴다.</b> 재윤은 중심 메시지로, 준호는 L1/L2/L3 표로, 홍섭은 "references는 필요할 때만 로드"로 같은 곳에 도달.</li>
+        <li><b>컴팩션 재부착 예산 — 스킬당 앞 5,000토큰, 합산 25,000토큰.</b> 세 정리본에 같은 수치가 독립적으로 등장한다. 준호는 <b>"스킬이 중간부터 안 듣는다"는 체감의 정체</b>로, 홍섭은 15% 모니터링 참고값으로, 재윤은 "2단계는 누적 고정비"의 근거로.</li>
+      </ul>
+    </div>
+    <div class="lens common">
+      <h3>실천 원칙</h3>
+      <p class="sub">셋 다 같은 선을 그은 작성 규칙</p>
+      <ul>
+        <li><b>스크립트 우선 — 로직은 코드로 내리고 결과만 컨텍스트에.</b> 재윤은 토큰으로(2,000토큰 vs 100~200토큰), 홍섭은 5원칙 ⑤로, 준호는 "실행인지 참조인지 명시하라"는 함정까지.</li>
+        <li><b>지원 파일은 도메인별로, 깊이는 1단계까지, 중첩 참조 금지.</b> 준호가 이유를 가장 구체적으로 댔다 — 참조가 또 참조하면 부분 읽기로 정보가 불완전해진다.</li>
+        <li><b><code>context: fork</code>와 <code>agent</code> 3옵션</b>(<code>Explore</code>/<code>Plan</code>/<code>general-purpose</code>, 생략 시 <code>general-purpose</code>). 셋 다 "결론만 필요한 좁은 작업엔 적합, 부모 맥락이 필요하면 부적합"으로 같은 선.</li>
+        <li><b><code>description</code>이 발동을 결정한다</b> — "무엇을 + 언제"를 트리거 문구까지 담아 쓴다. 셋 다 최우선 필드로 꼽았다.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section">흥미로운 것 <em>인상 깊었던 개념·경험</em></h2>
+  <div class="lenses">
+    <div class="lens interest">
+      <h3>각자의 실물 경험</h3>
+      <p class="sub">책이 아니라 자기 시스템에서 나온 것</p>
+      <ul>
+        <li><span class="tag hong">홍섭</span><b>nova-workflow — 교재의 "팀 배포 스킬"을 실물로 갖고 있다.</b> 18개 스킬을 마켓플레이스로 사내 배포. 셋 중 유일하게 <b>팀 배포 경로를 실제로 운영해 본</b> 축이다.</li>
+        <li><span class="tag hong">홍섭</span><b>자기 스킬을 기준에 대보고 초과를 인정한 것</b> — <code>humanize-korean</code> 257줄을 "리팩터 후보"로 스스로 지목. 실측이 자기 비판으로 이어진 드문 경우.</li>
+        <li><span class="tag hong">홍섭</span><b><code>name</code>은 라벨이고 실제 커맨드명은 디렉토리 이름에서 온다</b> — 동명사 규칙을 확인하러 갔다가 그보다 중요한 사실을 발견. 이름 규칙 논쟁의 전제 자체가 바뀐다.</li>
+        <li><span class="tag jae">재윤</span><b>ECC의 286개 스킬</b> — "286개를 깔아도 세션이 안 터지는 이유가 정확히 이 장의 주제"라는 프레이밍. 중심 메시지를 외부 사례로 직접 증명했다.</li>
+        <li><span class="tag jae">재윤</span><b>OMC의 <code>triggers</code> 배열</b> — 교재가 "<code>description</code>에 트리거 용어를 넣어라"라고 한 걸 <b>별도 필드로 분리한</b> 설계. 같은 문제의 다른 해법.</li>
+      </ul>
+    </div>
+    <div class="lens interest">
+      <h3>모르면 못 찾는 함정</h3>
+      <p class="sub">주로 준호 정리본에서, 그리고 두 사람이 교차 확인한 것</p>
+      <ul>
+        <li><span class="tag cross">재윤 × 준호</span><b><code>allowed-tools</code>는 제한이 아니라 사전 승인이다.</b> 재윤은 교재의 "원천 차단" 서술을 정정했고, 준호는 처음부터 "호출 턴 동안 승인 없이 쓸 도구, 다음 메시지에 해제"로 적었다. <b>보안 경고도 양쪽에 있다</b> — 스킬이 스스로에게 넓은 도구 권한을 줄 수 있다.</li>
+        <li><span class="tag cross">재윤 × 준호</span><b>우선순위는 <code>enterprise > personal > project</code></b> — 교재의 <code>project > user > managed</code>와 <b>반대</b>. 재윤이 실무 위험까지 짚었다: 팀이 커밋한 스킬을 팀원의 개인 스킬이 덮어써 <b>팀 표준이 조용히 무력화</b>된다.</li>
+        <li><span class="tag jun">준호</span><b>YAML이 깨지면 본문을 빈 메타데이터로 로드한다</b> — 증상이 "직접 부르면 되는데 자동 발동만 안 된다"로 나타나 <b>description 문제로 오진하기 쉽다.</b></li>
+        <li><span class="tag jun">준호</span><b>Cowork·클라우드 세션은 로컬 개인 스킬을 읽지 않는다.</b> 배포 표면을 처음부터 전제해야 한다.</li>
+        <li><span class="tag jun">준호</span><b>리스팅 예산을 넘으면 덜 쓰는 스킬의 description부터 통째로 사라진다.</b> 스킬 저장소가 커질수록 현실적인 발동 실패 원인.</li>
+        <li><span class="tag jun">준호</span><b>"만들었으면 측정하자"</b> — 발동하는 걸 봤다고 잘 동작하는 게 아니다. Anthropic 자체 시험에서 공개 스킬 6개 중 5개 트리거가 개선됐다.</li>
+        <li><span class="tag jun">준호</span><b>Opus 5에서 갈린 두 변화</b> — 불확실성 지침은 <b>더 필요해졌고</b>, 검증 지시는 <b>빼야 한다</b>. "유지 = 출력 규범 / 제거 = 절차 지시".</li>
+        <li><span class="tag jun">준호</span><b>자유도(degrees of freedom)</b> — 스킬을 얼마나 촘촘히 쓸지의 기준. 좁은 다리엔 가드레일, 들판엔 방향만.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section">갈린 관점 <em>같은 걸 서로 다르게 봄</em></h2>
+
+  <div class="split">
+    <h3>① 200줄 기준을 어떻게 대할 것인가 — 셋이 전부 다르다</h3>
+    <p class="sub">같은 숫자를 실무 기준 / 보수적 안전선 / 잘못된 수치로 처리했다.</p>
+    <div class="vs">
+      <div class="col hong">
+        <div class="head">홍섭</div>
+        <span class="stance">실무 기준으로 채택</span>
+        <p>200줄 = <b>SRP</b>. 자기 스킬을 실제로 재서 66·68줄은 양호, <b>257줄은 리팩터 후보</b>로 분류했다.</p>
+      </div>
+      <div class="col jae">
+        <div class="head">재윤</div>
+        <span class="stance">보수적 안전선으로 유지</span>
+        <p>공식이 <b>500줄</b>임을 확인하고도 교재 기준(200/150줄)을 유지. 근거는 <b>"노트 기준을 지키면 공식 기준도 자동 만족"</b>.</p>
+      </div>
+      <div class="col jun">
+        <div class="head">준호</div>
+        <span class="stance">수치 자체를 경계</span>
+        <p>200줄은 <b>"공식 근거 없는 수치"</b>. 나아가 <b>"기준은 줄 수가 아니라 토큰"</b> — 숫자를 못박으면 "150줄 안에 넣었으니 됐다"가 되면서 <b>정작 중요한 판단이 생략된다.</b></p>
+      </div>
+    </div>
+    <div class="verdict"><b>팀 규약을 쓸 때 정면으로 부딪히는 지점.</b> 어느 숫자를 쓸지가 아니라, 숫자를 쓸지 말지부터 갈린다.</div>
+  </div>
+
+  <div class="split">
+    <h3>② "description 100토큰"도 같은 구도</h3>
+    <p class="sub">수치의 성격 — 감각적 추정치냐, 실제 스펙이냐.</p>
+    <div class="vs">
+      <div class="col hong">
+        <div class="head">홍섭</div>
+        <span class="stance">원칙으로 채택</span>
+        <p>5원칙 ①로 그대로 — <b>"100토큰 예산 안에서 발견 확률 극대화"</b>.</p>
+      </div>
+      <div class="col jae">
+        <div class="head">재윤</div>
+        <span class="stance">사용 + 보정</span>
+        <p>비용 추정식의 <b>기본 단위</b>로 쓰되, 별도로 <b>"실제로는 예산제이고 튜닝 가능한 값"</b>이라 보정.</p>
+      </div>
+      <div class="col jun">
+        <div class="head">준호</div>
+        <span class="stance">잘못된 수치로 분류</span>
+        <p>실제는 <code>name</code> <b>64자</b>, <code>description</code> <b>1,024자</b>, Claude Code에선 <code>description</code> + <code>when_to_use</code> 합산 <b>1,536자</b> 캡.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="split">
+    <h3>③ <code>pre-chapter-prep</code>에 <code>context: fork</code>를 붙일 것인가 — 정반대 판단</h3>
+    <p class="sub">같은 스킬을 두고 도입 후보 vs 부적합으로 갈렸다.</p>
+    <div class="vs two">
+      <div class="col hong">
+        <div class="head">홍섭 — 첫 적용 지점으로 지목</div>
+        <p>이 스킬은 이미 <b>3단계 HTML 생성을 "서브에이전트 위임 가능"</b>이라 명시하고 있다. 여기에 <code>context: fork</code> + <code>agent: general-purpose</code>를 붙이는 게 자연스럽다.</p>
+      </div>
+      <div class="col jae">
+        <div class="head">재윤 — 부적합으로 판정</div>
+        <p>스킬 <b>전체</b>를 포크로 만들면 1→2단계의 <b>역질문 게이트(사람과의 대화)가 불가능</b>해진다. 부모 맥락이 필수인 스킬이다. 대신 <b><code>mid-zettelkasten-synthesis</code></b>를 도입 대상으로 확정.</p>
+      </div>
+    </div>
+    <div class="verdict"><b>층위가 다르다</b> — 홍섭은 3단계(HTML 생성)만, 재윤은 스킬 전체. <code>context</code>는 스킬 단위 필드라 <b>"일부 단계만 포크"가 성립하는지</b>부터 확인해야 결론이 난다. 준호의 기준을 대면 판단 재료가 둘 더 붙는다 — <b>"지침만 있고 task가 없으면 빈손으로 돌아온다"</b>, <b>"다른 스킬과 스택해서 쓰는 스킬은 포크에서 확장이 끊긴다"</b>.</div>
+  </div>
+
+  <div class="split">
+    <h3>④ 스킬 품질을 무엇으로 측정하나 — 축이 다르다</h3>
+    <p class="sub">셋을 합치면 로드 → 발동 → 품질 → 비용의 전 구간이 되지만, 지금은 각자 한 축씩만 보고 있다.</p>
+    <div class="vs">
+      <div class="col hong">
+        <div class="head">홍섭 — 비용 축</div>
+        <p><code>/context</code>의 <b>Skills row</b>와 <b>statusline</b>으로 토큰 점유를 보고 15% 목표와 비교.</p>
+      </div>
+      <div class="col jae">
+        <div class="head">재윤 — 정합성 축</div>
+        <p><code>description</code> 구체성, 경로 규칙, YAML 유효성, <code>--debug</code> — <b>"제대로 로드되는가"</b>까지.</p>
+      </div>
+      <div class="col jun">
+        <div class="head">준호 — 효과 축</div>
+        <p>skill-creator의 eval·벤치마크·<b>블라인드 A/B</b>로 발동률과 출력 품질을, OTEL <code>skill_activated</code>로 <b>자동/수동 발동 비율</b>을.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="split">
+    <h3>⑤ 환각 방지 — 지침으로 충분한가, 검증 장치까지 필요한가</h3>
+    <div class="vs two">
+      <div class="col jae">
+        <div class="head">재윤 — 지침 3종</div>
+        <p>스킬 본문에 넣을 <b>불확실성 허용 / 정보 출처 제한 / 출처 명시</b>로 정리. 지금 이 스킬의 규칙 2·3이 정확히 그 장치라는 실측까지.</p>
+      </div>
+      <div class="col jun">
+        <div class="head">준호 — 지침 + 구조</div>
+        <p>같은 3종에 <b>반례</b>를 덧붙인다 — "출처만 요구하면 <b>출처 자체를 지어내는</b> 실패 모드가 남는다". 그래서 <b>plan-validate-execute</b>: <b>지침은 확률을 낮추지만 검증은 결정론적이다.</b></p>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section">이번 장의 정정 <em>교재 노트와 현재 동작이 다른 지점</em></h2>
+  <div class="callout">
+    <h3>⚠️ <code>allowed-tools</code>는 도구를 제한하지 않는다</h3>
+    <p>재윤·준호가 독립적으로 같은 지점에 도달했다. 공식문서 원문: <i>"It <b>does not restrict</b> which tools are available: every tool remains callable."</i> 진짜 제한은 <code>disallowed-tools</code>이고, 승인 범위도 <b>호출한 그 턴에만</b> 유효하다.</p>
+    <div class="fix">
+      <div class="bad"><span class="lbl">교재 예시 — 이름과 달리 막지 못한다</span><code>name: safe-file-reader</code><br><code>allowed-tools: Read, Grep, Glob</code><br>→ 파일 수정이 <b>여전히 가능</b>하다.</div>
+      <div class="good"><span class="lbl">실제로 읽기 전용을 강제하려면</span><code>disallowed-tools</code>로 도구 풀에서 제거하거나 권한 설정으로 막는다.</div>
+    </div>
+    <p style="margin-top:12px"><b>우리 팀에 직결되는 이유</b>: 스킬을 PR로 주고받는데, 공식문서는 <i>"a skill can grant itself broad tool access"</i>라며 저장소를 신뢰하기 전 스킬 검토를 권한다. 준호 지적대로 개인 요금제라 조직 보안 스캐닝을 못 쓰면 <b>그 리뷰를 사람이 대신해야 한다.</b></p>
+  </div>
+
+  <h2 class="section">팀이 더 팔 것 <em>미해결 · 궁금 · 액션</em></h2>
+  <div class="lenses">
+    <div class="lens dig">
+      <h3>결론이 필요한 것</h3>
+      <p class="sub">사람마다 다르게 답해서 팀이 정해야 하는 것</p>
+      <ul>
+        <li><span class="tag team">충돌</span><b><code>context: fork</code> 도입 대상.</b> <code>pre-chapter-prep</code>의 HTML 단계인가(홍섭), 스킬 전체는 부적합하니 <code>mid-zettelkasten-synthesis</code>인가(재윤). <b><code>context</code>가 스킬 단위 필드인 이상 "3단계만 포크"가 성립하는지</b>부터.</li>
+        <li><span class="tag team">규약</span><b>SKILL.md 분량 기준을 200 / 500 / "숫자 안 씀" 중 무엇으로.</b> 준호의 "숫자를 못박으면 판단이 생략된다"는 경고를 규약에 어떻게 반영할지.</li>
+        <li><span class="tag team">규약</span><b>스킬 PR 리뷰 체크리스트.</b> <code>allowed-tools</code>·번들 스크립트 확인을 승격 절차에 넣을지.</li>
+        <li><span class="tag jae">재윤</span><b>개인 스킬이 프로젝트 스킬을 덮어쓴다.</b> 앞으로 <code>~/.claude/skills/</code>를 만들 때 <code>pre-</code>/<code>mid-</code> 접두사와 겹치면 <b>팀 스킬이 조용히 무시된다.</b> 네이밍 규약이 필요한지.</li>
+        <li><span class="tag jun">준호</span><b>우리 공통 스킬 9개는 웹·Cowork에서 동작하나?</b> claude.ai 배포 시 <b>스펙 밖 필드는 하드 에러</b>인데, 우리 스킬이 쓰는 Claude Code 전용 필드가 무엇인지 점검 필요.</li>
+      </ul>
+    </div>
+    <div class="lens dig">
+      <h3>만들 것 · 확인할 것</h3>
+      <p class="sub">각 정리본의 액션과 열린 질문</p>
+      <ul>
+        <li><span class="tag team">공통 실측</span><b><code>scripts/</code>·<code>templates/</code>가 비어 있다.</b> 재윤은 하나도 없고, 홍섭은 플러그인 루트에만 있고 스킬 안엔 하나뿐. 출발점은 공식 <b><code>codebase-visualizer</code></b> — SKILL.md엔 사용법만, 스크립트 코드는 컨텍스트에 안 들어간다.</li>
+        <li><span class="tag jae">재윤</span><b>다음에 만들 것 4가지</b> — ① <code>sync-claude-skills-to-codex</code>에 <code>scripts/</code> ② <code>mid-zettelkasten-synthesis</code>에 <code>context: fork</code> ③ 범용 유틸리티 스킬을 <code>~/.claude/skills/</code>에 신설 ④ 기존 스킬에 <code>EXAMPLES.md</code>.</li>
+        <li><span class="tag hong">홍섭</span><b>E2E API 테스트 스킬화</b> — 설계는 확정(절차는 SKILL.md, env 값은 <code>settings.local.json</code>). 실제 제작이 남았다.</li>
+        <li><span class="tag team">팀</span><b>eval을 도입할 것인가.</b> 준호의 "평가부터 만든다"가 가장 강한 권고인데 가장 자주 빠진다는 지적. skill-creator로 우리 스킬 9개의 발동률을 재볼지.</li>
+        <li><span class="tag jae">재윤</span><b>교재 노트 내부 불일치 2건 (확인 필요)</b> — 동적 로딩 구조도의 "2단계/3단계" 표기가 1.6절 표와 어긋남. Version History 예시에서 v1.0.0과 v2.1.0의 날짜가 같은 <code>2025-12-01</code>로 적혀 있어 오기로 보임.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <p><b>개인 정리 원문</b> · <a href="./hongseob/정리본.md">홍섭</a> · <a href="./jaeyoon/정리본.md">재윤</a> · <a href="./junho/Chapter 03. 에이전트 스킬.md">준호</a> &nbsp;|&nbsp; <b>개인 발표</b> · <a href="./hongseob/발표.html">홍섭</a> · <a href="./jaeyoon/발표.html">재윤</a></p>
+    <p><b>공식 문서</b> · <a href="https://code.claude.com/docs/en/skills">Extend Claude with skills</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices">Skill authoring best practices</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise">Skills for enterprise</a> · <a href="https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations">Reduce hallucinations</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5">Prompting Claude Opus 5</a></p>
+    <p><b>저장소·도구</b> · <a href="https://github.com/anthropics/skills">anthropics/skills</a> · <a href="https://agentskills.io">Agent Skills 표준</a> · <a href="https://github.com/mediquitous-dev/nova-workflow">nova-workflow</a>(홍섭 제작) · <a href="https://github.com/affaan-m/ecc">ECC</a> · <a href="https://github.com/Yeachan-Heo/oh-my-claudecode">oh-my-claudecode</a></p>
+    <p style="margin-top:12px;color:#6f7b8a">커뮤니티 프로젝트가 제시하는 스킬·에이전트 개수와 성능 수치는 각 프로젝트 자체 문서 기준이며, 독립적으로 검증된 값이 아니다. 버전에 민감한 내용(v2.1.x 변경점 등)은 공식문서에서 재확인이 필요하다.</p>
+  </footer>
+
+</div>
+</body>
+</html>
