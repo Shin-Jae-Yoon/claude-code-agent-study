@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 4 · 서브에이전트</title>
+<style>
+  :root{
+    --ink:#17201c; --muted:#66716a; --paper:#f4f1e8;
+    --card:rgba(255,255,255,.78); --line:rgba(23,32,28,.13);
+    --green:#1d6b50; --green-soft:#d8ebdf;
+    --orange:#c76236; --orange-soft:#f5dfd2;
+    --blue:#315c88; --blue-soft:#dce8f3;
+    --plum:#7b4a6e; --plum-soft:#ecdce8;
+    --shadow:0 20px 55px rgba(35,48,41,.09);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(199,98,54,.12), transparent 27rem),
+      radial-gradient(circle at 88% 24%, rgba(29,107,80,.12), transparent 30rem),
+      radial-gradient(circle at 50% 82%, rgba(49,92,136,.09), transparent 32rem),
+      var(--paper);
+    font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+    line-height:1.72;letter-spacing:-.015em;-webkit-text-size-adjust:100%;
+  }
+  .progress{position:fixed;inset:0 auto auto 0;z-index:30;width:0;height:4px;
+    background:linear-gradient(90deg,var(--orange),var(--green))}
+  main{width:min(1120px,calc(100% - 40px));margin:0 auto}
+  section{padding:78px 0;border-bottom:1px solid var(--line)}
+  section:last-child{border-bottom:0}
+
+  .hero{min-height:90vh;display:grid;place-items:center;text-align:center;padding-top:46px;border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;padding:7px 16px;border-radius:999px;
+    background:var(--card);border:1px solid var(--line);font-size:.83rem;font-weight:700;
+    letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+  .hero h1{margin:24px 0 6px;font-size:clamp(2.5rem,7vw,4.4rem);line-height:1.14;letter-spacing:-.04em}
+  .hero .sub{margin:0 0 30px;color:var(--muted);font-size:clamp(1rem,2.4vw,1.2rem)}
+  .thesis{max-width:790px;margin:0 auto;padding:26px 28px;background:var(--card);
+    border:1px solid var(--line);border-left:5px solid var(--green);border-radius:16px;
+    box-shadow:var(--shadow);text-align:left}
+  .thesis .label{font-size:.78rem;font-weight:800;letter-spacing:.1em;color:var(--green);text-transform:uppercase}
+  .thesis p.big{margin:8px 0 12px;font-size:clamp(1.15rem,3vw,1.6rem);font-weight:800;line-height:1.44;letter-spacing:-.03em}
+  .thesis p.small{margin:0;color:var(--muted);font-size:.96rem}
+  .hero-meta{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .chip{padding:6px 14px;border-radius:999px;font-size:.83rem;font-weight:700;
+    background:var(--card);border:1px solid var(--line);color:var(--muted)}
+
+  .kicker{font-size:.79rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin:0 0 6px}
+  h2{margin:0 0 10px;font-size:clamp(1.65rem,4.2vw,2.3rem);letter-spacing:-.035em;line-height:1.24}
+  h3{margin:36px 0 12px;font-size:clamp(1.12rem,2.6vw,1.32rem);letter-spacing:-.028em}
+  .lead{margin:0 0 24px;color:var(--muted);max-width:74ch;font-size:1.02rem}
+
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:22px 22px 20px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 8px;font-size:1.02rem;letter-spacing:-.025em}
+  .card p{margin:0;color:var(--muted);font-size:.93rem}
+  .card .num{font-size:.75rem;font-weight:800;letter-spacing:.1em;color:var(--orange);display:block;margin-bottom:6px}
+
+  code,kbd{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.86em;background:rgba(23,32,28,.06);padding:.12em .42em;border-radius:5px}
+  pre{margin:0;background:#1b2320;color:#e8eee9;border-radius:14px;padding:18px 20px;
+    overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.84rem;line-height:1.62}
+  pre .c{color:#8ea69a}
+  pre .k{color:#e0a06f}
+
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:.92rem}
+  th,td{padding:12px 15px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{background:rgba(23,32,28,.045);font-size:.82rem;letter-spacing:.03em;color:var(--muted);
+    text-transform:uppercase;font-weight:800;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:0}
+
+  /* ---------- 좌우 2열 대비 ---------- */
+  .versus{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-top:8px}
+  .vs-col{border:1px solid var(--line);border-radius:18px;padding:24px 24px 20px;background:var(--card);box-shadow:var(--shadow)}
+  .vs-a{border-top:5px solid var(--blue)}
+  .vs-b{border-top:5px solid var(--plum)}
+  .vs-head{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .vs-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.15rem;flex:none}
+  .vs-a .vs-icon{background:var(--blue-soft);color:var(--blue)}
+  .vs-b .vs-icon{background:var(--plum-soft);color:var(--plum)}
+  .vs-col h4{margin:0;font-size:1.16rem;letter-spacing:-.03em}
+  .vs-col .tag{font-size:.8rem;font-weight:700;color:var(--muted)}
+  .vs-mid{display:grid;place-items:center;width:56px;font-weight:900;color:var(--muted);font-size:.9rem;letter-spacing:.06em}
+  .vs-list{list-style:none;margin:16px 0 0;padding:0}
+  .vs-list li{padding:9px 0 9px 22px;position:relative;font-size:.93rem;border-top:1px dashed var(--line)}
+  .vs-list li:first-child{border-top:0}
+  .vs-list li::before{content:"";position:absolute;left:2px;top:1.05em;width:8px;height:8px;border-radius:50%}
+  .vs-a .vs-list li::before{background:var(--blue)}
+  .vs-b .vs-list li::before{background:var(--plum)}
+  .vs-list b{display:block;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+  .vs-verdict{display:grid;grid-template-columns:1fr auto 1fr;gap:0;margin-top:14px}
+  .vd{padding:14px 18px;border-radius:14px;font-size:.93rem;font-weight:700}
+  .vd-a{background:var(--blue-soft);color:#1f3d5c}
+  .vd-b{background:var(--plum-soft);color:#5a3350}
+  .vd-mid{width:56px}
+
+  /* ---------- 오케스트레이터 다이어그램 ---------- */
+  .orch{display:grid;gap:14px;justify-items:center;padding:26px 18px;background:var(--card);
+    border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+  .node{padding:12px 20px;border-radius:12px;font-weight:800;font-size:.95rem;border:1px solid var(--line);text-align:center}
+  .node-main{background:var(--orange-soft);color:#7c3c1e;border-color:rgba(199,98,54,.35)}
+  .node-sub{background:var(--green-soft);color:#14503c;border-color:rgba(29,107,80,.3);font-size:.9rem}
+  .orch-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .arrow{color:var(--muted);font-size:1.1rem;line-height:1}
+  .orch-note{font-size:.85rem;color:var(--muted);text-align:center;max-width:52ch}
+
+  /* ---------- 실측 박스 ---------- */
+  .measured{border:1px solid var(--line);border-left:5px solid var(--blue);background:var(--card);
+    border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);margin-top:16px}
+  .measured .m-label{font-size:.75rem;font-weight:800;letter-spacing:.1em;color:var(--blue);text-transform:uppercase;margin-bottom:6px}
+  .measured ul{margin:0;padding-left:1.15em}
+  .measured li{font-size:.92rem;margin:5px 0}
+  .measured li::marker{color:var(--blue)}
+
+  .warn{border:1px solid var(--line);border-left:5px solid var(--orange);background:var(--card);
+    border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);margin-top:16px}
+  .warn .m-label{font-size:.75rem;font-weight:800;letter-spacing:.1em;color:var(--orange);text-transform:uppercase;margin-bottom:6px}
+  .warn p{margin:0;font-size:.94rem}
+
+  .stack{display:grid;gap:8px}
+  .layer{display:flex;align-items:center;gap:14px;padding:13px 18px;border-radius:12px;
+    border:1px solid var(--line);background:var(--card);font-size:.94rem}
+  .layer .rank{font-weight:900;font-size:.8rem;color:var(--muted);width:2.4em;flex:none}
+  .layer .path{font-family:ui-monospace,Menlo,monospace;font-size:.86rem}
+  .layer .scope{margin-left:auto;font-size:.82rem;color:var(--muted);text-align:right}
+  .layer.new{border-color:rgba(199,98,54,.4);background:linear-gradient(0deg,var(--orange-soft),var(--orange-soft))}
+  .badge-new{font-size:.68rem;font-weight:800;letter-spacing:.06em;background:var(--orange);color:#fff;
+    padding:2px 7px;border-radius:6px;margin-left:8px;vertical-align:middle}
+
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .pill{font-size:.83rem;font-weight:700;padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:var(--card)}
+  .pill.add{background:var(--orange-soft);border-color:rgba(199,98,54,.35);color:#7c3c1e}
+  .pill.base{color:var(--muted)}
+
+  .closing{display:grid;gap:14px}
+  .close-item{display:flex;gap:16px;align-items:flex-start;padding:20px 22px;background:var(--card);
+    border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+  .close-item .n{font-size:1.5rem;font-weight:900;color:var(--orange);line-height:1;flex:none;width:1.5em}
+  .close-item h4{margin:0 0 4px;font-size:1.05rem;letter-spacing:-.025em}
+  .close-item p{margin:0;color:var(--muted);font-size:.94rem}
+
+  footer{padding:44px 0 70px;text-align:center;color:var(--muted);font-size:.86rem}
+
+  @media (max-width:860px){
+    .g2,.g3{grid-template-columns:1fr}
+    .versus,.vs-verdict{grid-template-columns:1fr}
+    .vs-mid,.vd-mid{width:auto;padding:10px 0}
+    section{padding:58px 0}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div>
+    <span class="eyebrow">Chapter 04 · 재윤</span>
+    <h1>서브에이전트</h1>
+    <p class="sub">스킬이 <b>무엇을 아는지</b>라면, 서브에이전트는 <b>어떻게 일하는지</b>다</p>
+    <div class="thesis">
+      <div class="label">이 장의 한 문장</div>
+      <p class="big">서브에이전트를 서브에이전트로 만드는 건 도구도 모델도 아니고, <span style="color:var(--green)">컨텍스트 격리</span>다.</p>
+      <p class="small">3장의 스킬이 <b>점진적 공개</b>로 지식의 비용을 0에 수렴시켰다면, 4장의 서브에이전트는 <b>컨텍스트 격리</b>로 작업의 비용을 격리한다. 자체 컨텍스트에서 일하고, 메인에는 <b>정제된 결과만</b> 돌려준다. 나머지 전부(오케스트레이터-워커, 적정 고도, 체인·병렬, 프론트매터, 스킬 주입)는 이 한 문장을 실현하는 수단이다.</p>
+    </div>
+    <div class="hero-meta">
+      <span class="chip">실측 기준일 2026-08-27</span>
+      <span class="chip">claude 2.1.247</span>
+      <span class="chip">+ 에이전트 팀 (교재 밖 보강)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 핵심 개념 ===== -->
+<section>
+  <p class="kicker">핵심 개념 셋</p>
+  <h2>이 셋만 잡으면 4장은 끝난다</h2>
+  <p class="lead">서브에이전트는 클로드 코드의 <b>Agent 도구</b>로 호출되는 특화된 AI 어시스턴트다. 자체 컨텍스트 윈도우 · 커스텀 시스템 프롬프트 · 할당된 도구를 갖고, <b>YAML 프론트매터 + 마크다운 본문</b>으로 정의된다. 본문이 곧 시스템 프롬프트다.</p>
+  <div class="grid g3">
+    <div class="card">
+      <span class="num">01</span>
+      <h4>컨텍스트 격리</h4>
+      <p>서브에이전트는 자기 컨텍스트에서 대규모 파일을 읽고 명령을 돌린다. 메인은 그 과정을 보지 않고 <b>정제된 결과만</b> 받는다. 그래서 메인 컨텍스트가 깨끗하게 유지된다.</p>
+    </div>
+    <div class="card">
+      <span class="num">02</span>
+      <h4>오케스트레이터 - 워커</h4>
+      <p>메인 = 오케스트레이터, 핵심 역할은 <b>작업 분배 + 결과 통합</b>. 서브 = 워커. 스킬과 똑같이 <b>단일 책임 원칙(SRP)</b>이 적용된다.</p>
+    </div>
+    <div class="card">
+      <span class="num">03</span>
+      <h4>적정 고도 (right altitude)</h4>
+      <p>너무 상세하면 핵심을 놓치고, 너무 모호하면 잘못된 결정을 내린다. <b>방향을 줄 만큼 구체적이되 판단 여지를 남기는</b> 지침이 컨텍스트 엔지니어링의 핵심.</p>
+    </div>
+  </div>
+
+  <h3>언제 서브에이전트를 쓰는가 — 판단 기준 3개</h3>
+  <div class="grid g3">
+    <div class="card"><h4>① 작업의 복잡도</h4><p>여러 파일에 걸친 분석, 장기간 실행되는 작업</p></div>
+    <div class="card"><h4>② 컨텍스트 소모량</h4><p>대규모 파일 읽기, 명령 실행이 필요한 작업</p></div>
+    <div class="card"><h4>③ 전문성 요구 수준</h4><p>특정 도메인에 상세한 지침이 필요한 작업</p></div>
+  </div>
+</section>
+
+<!-- ===== 1절 아키텍처 ===== -->
+<section>
+  <p class="kicker">1절 · 개념과 아키텍처</p>
+  <h2>위임의 모양</h2>
+
+  <div class="orch">
+    <div class="node node-main">메인 에이전트 (오케스트레이터) — 분배 + 통합</div>
+    <div class="arrow">▼ &nbsp; ▼ &nbsp; ▼</div>
+    <div class="orch-row">
+      <div class="node node-sub">분석 워커</div>
+      <div class="node node-sub">수정 워커</div>
+      <div class="node node-sub">테스트 워커</div>
+    </div>
+    <div class="arrow">▲ 정제된 결과만 반환 ▲</div>
+    <p class="orch-note">워커가 읽은 수백 줄은 메인 컨텍스트에 올라오지 않는다. 이게 격리의 실익.</p>
+  </div>
+
+  <h3>실행 패턴 — 순차 체인 vs 병렬</h3>
+  <div class="grid g2">
+    <div class="card" style="border-top:4px solid var(--green)">
+      <h4>🔗 순차 실행 (체인)</h4>
+      <p>앞 에이전트의 결과가 뒤 에이전트의 입력이 되는 파이프라인.<br><br>
+      <code>코드 분석 → 문제 식별</code> → <code>수정 → 코드 변경</code> → <code>테스트 → 변경 검증</code></p>
+    </div>
+    <div class="card" style="border-top:4px solid var(--blue)">
+      <h4>⚡ 병렬 실행</h4>
+      <p>독립적인 작업을 동시에 처리.<br><br>
+      예: 여러 모듈의 코드 품질을 동시에 검토. 서로 기다리지 않아도 되는 작업일 때만 이득.</p>
+    </div>
+  </div>
+
+  <div class="measured">
+    <div class="m-label">내 클로드 시스템에서 확인한 예시</div>
+    <ul>
+      <li><b>커스텀 서브에이전트는 아직 0개다.</b> <code>.claude/agents/</code>도 <code>~/.claude/agents/</code>도 디렉터리 자체가 없다.</li>
+      <li>대신 <b>플러그인 서브에이전트</b>는 실측된다 — <code>humanize-korean@im-not-ai</code> v2.3.2가 9개를 제공한다.</li>
+      <li>순차 체인의 실물: 이 플러그인의 정밀 모드가 <code>humanize-diagnostician</code>(진단) → 윤문 → <code>humanize-finalizer</code>(마무리) 3콜 파이프라인이다. 앞 단계 산출물 <code>02_diagnosis.md</code>를 뒤 단계가 읽는다.</li>
+      <li>SRP도 문서로 못박혀 있다 — 진단가는 <b>"윤문하지 않는다"</b>, 마무리는 <b>"전체 재작성 금지"</b>.</li>
+      <li>같이 깔린 <code>ouroboros</code> v0.51.0에는 <code>agents/</code>가 <b>없다</b>. 스킬만 주는 플러그인 — 스킬과 서브에이전트가 별개 축이라는 증거.</li>
+      <li><b>병렬 실행은 이 저장소에 아직 없다.</b> 도입한다면 3인 정리본을 한 명씩 맡겨 동시에 검토하는 자리가 가장 자연스럽다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 2절 사용하기 ===== -->
+<section>
+  <p class="kicker">2절 · 사용하기</p>
+  <h2>호출 · 재개 · 측정</h2>
+  <p class="lead"><code>/agents</code>로 목록을 본다. 교재는 우선순위를 3단(프로젝트 &gt; 사용자 &gt; 내장)으로 설명하지만, <b>현재 버전은 5단</b>으로 늘었다.</p>
+
+  <div class="stack">
+    <div class="layer new"><span class="rank">1</span><span class="path">관리형 설정(managed settings)</span><span class="badge-new">추가</span><span class="scope">조직 전체</span></div>
+    <div class="layer new"><span class="rank">2</span><span class="path">--agents CLI 플래그</span><span class="badge-new">추가</span><span class="scope">현재 세션</span></div>
+    <div class="layer"><span class="rank">3</span><span class="path">.claude/agents/</span><span class="scope">현재 프로젝트</span></div>
+    <div class="layer"><span class="rank">4</span><span class="path">~/.claude/agents/</span><span class="scope">내 모든 프로젝트</span></div>
+    <div class="layer new"><span class="rank">5</span><span class="path">플러그인의 agents/</span><span class="badge-new">추가</span><span class="scope">플러그인이 켜진 곳</span></div>
+  </div>
+  <p class="lead" style="margin-top:14px">내장 에이전트도 <code>general-purpose</code>·<code>Explore</code>·<code>Plan</code>에 <b><code>claude</code></b>(catch-all)가 추가됐다. <code>Explore</code>와 <code>Plan</code>은 조사 속도·비용을 위해 <b>CLAUDE.md와 git status를 건너뛴다</b>.</p>
+
+  <h3>호출 문법 — 자동 위임은 <code>description</code>에 달렸다</h3>
+  <pre><span class="c"># 자연어 명시 호출</span>
+code-review 서브에이전트 사용해서 내 최근 변경 사항 검토해 줘
+
+<span class="c"># 적극적 자동 위임 유도 키워드 (description 필드에)</span>
+<span class="k">use PROACTIVELY</span> / <span class="k">MUST BE USED</span>
+
+<span class="c"># 컨텍스트와 함께 호출</span>
+@code-reviewer(agent) 서브에이전트로 @src/auth/login.ts 파일 리뷰해줘</pre>
+  <div class="warn">
+    <div class="m-label">미확정</div>
+    <p>현재 공식 문서 표기는 소문자 <code>use proactively</code>이고, <code>(agent)</code> 접미 표기는 공식 서브에이전트 문서에서 확인되지 않았다. <b>교재 표기를 그대로 두고 미검증으로 남긴다.</b></p>
+  </div>
+
+  <div class="measured">
+    <div class="m-label">내 클로드 시스템에서 확인한 예시</div>
+    <ul>
+      <li><code>description</code>이 위임의 유일한 근거라는 게 플러그인에서 극단적으로 드러난다. 공식 <code>pr-review-toolkit</code>의 <code>code-reviewer.md</code>는 <code>description</code> <b>한 필드에</b> 위임 시나리오 3개(기능 구현 직후 / 작성 코드 자체 리뷰 / PR 직전 최종 점검)를 통째로 서술해 넣었다.</li>
+      <li>본문이 아니라 <b><code>description</code>에 넣어야</b> 위임 판단에 쓰인다.</li>
+    </ul>
+  </div>
+
+  <h3>작업 재개 — 교재와 현재 버전이 갈리는 지점</h3>
+  <div class="grid g2">
+    <div class="card" style="border-top:4px solid var(--muted)">
+      <h4>📘 교재</h4>
+      <p>호출할 때마다 새 인스턴스. 이어가려면 <b>resume 명시</b> 필요. 실행마다 고유 <b>agentId</b>가 붙고, 대화는<br><code>~/.claude/projects/{project}/{sessionId}/subagents/agent-{agentId}.jsonl</code>에 저장.</p>
+    </div>
+    <div class="card" style="border-top:4px solid var(--orange)">
+      <h4>🆕 현재 (2.1.247)</h4>
+      <p>agentId 대신 <b>이름(name)</b>. 클로드가 Agent 호출에 <code>name</code>을 붙이면 그 이름이 <code>SendMessage</code>의 <code>to</code>가 되고, <b>완료된 서브에이전트가 메시지를 받으면 백그라운드에서 자동 재개</b>된다.</p>
+    </div>
+  </div>
+  <div class="warn">
+    <div class="m-label">미확정 — 정직하게</div>
+    <p>교재가 말한 트랜스크립트 경로를 <b>확인하지 못했다.</b> <code>~/.claude/projects</code> 아래 6개 프로젝트 전체에 <code>subagents/</code>도 <code>agent-*.jsonl</code>도 없다. <b>서브에이전트를 돌린 이력이 없어서일 가능성이 크며, 경로가 틀렸다는 근거는 아니다.</b> 실재하는 건 <code>{sessionId}.jsonl</code>과 <code>{sessionId}/tool-results/toolu_*.txt</code>뿐.</p>
+  </div>
+
+  <h3>성능 측정 3지표</h3>
+  <div class="grid g3">
+    <div class="card"><h4>⏱ 작업 완료 시간</h4><p>시작 ~ 결과 반환. 동일 유형끼리 비교해 효율성 평가.</p></div>
+    <div class="card"><h4>🎯 결과 품질</h4><p>발견한 문제의 타당성, 수정 제안의 적절성.</p></div>
+    <div class="card"><h4>🪙 컨텍스트 사용량</h4><p>같은 결과를 더 적은 토큰으로 낸 쪽이 효율적.</p></div>
+  </div>
+  <div class="measured">
+    <div class="m-label">내 클로드 시스템에서 확인한 예시</div>
+    <ul>
+      <li>세 지표를 강제하는 장치는 <b>아직 없다.</b> 다만 <code>humanize-monolith</code>가 <b>"도구 호출 총 3회"</b>로 컨텍스트 상한을 못박고, 그 근거로 "5인 파이프라인이 wall-clock 25분에 도달했다"는 <b>완료 시간 측정 결과</b>를 든다 — 측정 → 재설계의 실물 사례.</li>
+      <li>도입 자리는 이미 있다. <code>~/.claude/settings.json</code>에 <code>SubagentStart</code>/<code>SubagentStop</code> 훅이 등록돼 있어(현재 orca-cli가 점유), 타임스탬프 로깅만 붙이면 완료 시간은 자동 수집된다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 3절 커스텀 개발 ===== -->
+<section>
+  <p class="kicker">3절 · 커스텀 개발과 스킬 주입</p>
+  <h2>프론트매터는 경계, 본문은 행동</h2>
+
+  <pre>---
+<span class="k">name</span>: code-reviewer            <span class="c"># 필수 · 소문자·하이픈만</span>
+<span class="k">description</span>: 코드 품질·보안·유지보수성 전문가. 코드 변경 직후 사용   <span class="c"># 필수 · 자동 위임의 근거</span>
+<span class="k">tools</span>: Read, Grep, Glob, Bash  <span class="c"># 생략 시 전체 상속</span>
+<span class="k">model</span>: inherit                 <span class="c"># 기본값이 inherit</span>
+<span class="k">skills</span>: moai-foundation-core, moai-lang-unified
+---
+<span class="c">여기부터 본문 = 시스템 프롬프트</span></pre>
+
+  <h3>교재 9필드는 전부 유효하고, 7개가 더 붙었다</h3>
+  <div class="pill-row">
+    <span class="pill base">name</span><span class="pill base">description</span><span class="pill base">tools</span>
+    <span class="pill base">disallowedTools</span><span class="pill base">model</span><span class="pill base">permissionMode</span>
+    <span class="pill base">skills</span><span class="pill base">hooks</span><span class="pill base">memory</span>
+    <span class="pill add">maxTurns</span><span class="pill add">mcpServers</span><span class="pill add">background</span>
+    <span class="pill add">effort</span><span class="pill add">isolation</span><span class="pill add">color</span><span class="pill add">initialPrompt</span>
+  </div>
+  <p class="lead" style="margin-top:14px"><code>permissionMode</code>도 5종 → <b>7종</b>(<code>auto</code>, <code>manual</code> 추가). 특히 <code class="">isolation: worktree</code>는 교재 1.6의 <b>"깃 워크트리로 병렬 작업"</b> 패턴이 필드 하나로 내장화된 것.</p>
+
+  <h3>우선순위 — <code>permissionMode</code> &gt; <code>tools</code></h3>
+  <div class="grid g2">
+    <div class="card" style="border-top:4px solid var(--orange)">
+      <h4>⚠️ 상위가 이긴다</h4>
+      <p><code>tools</code>에 <code>Write</code>·<code>Edit</code>가 있어도 <code>permissionMode: plan</code>이면 <b>실제 파일 수정 불가</b>.</p>
+    </div>
+    <div class="card" style="border-top:4px solid var(--green)">
+      <h4>acceptEdits vs bypassPermissions</h4>
+      <p><b>acceptEdits</b> — 파일 편집에 <b>한해</b> 자동화<br><b>bypassPermissions</b> — 파이프라인급 <b>완전 자동화</b>, 모든 확인 건너뜀</p>
+    </div>
+  </div>
+
+  <h3>hooks — 에이전트 스코프 생애 주기</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>시점</th><th>호출 타이밍</th><th>용도</th></tr></thead>
+      <tbody>
+        <tr><td><code>PreToolUse</code></td><td>도구 실행 <b>직전</b></td><td>실행 검증, 전처리</td></tr>
+        <tr><td><code>PostToolUse</code></td><td>도구 실행 <b>직후</b></td><td>결과 로깅, 후처리</td></tr>
+        <tr><td><code>Stop</code></td><td>에이전트 <b>종료 시</b></td><td>정리 작업, 결과 보고</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="measured">
+    <div class="m-label">내 클로드 시스템에서 확인한 예시</div>
+    <ul>
+      <li>에이전트 스코프 훅은 없지만 <b>전역 훅은 실측된다</b> — <code>~/.claude/settings.json</code>에 11개 등록: <code>SessionStart</code> <code>UserPromptSubmit</code> <code>Stop</code> <code>StopFailure</code> <code>SubagentStart</code> <code>SubagentStop</code> <code>TeammateIdle</code> <code>PreToolUse</code> <code>PostToolUse</code> <code>PostToolUseFailure</code> <code>PermissionRequest</code>.</li>
+      <li>전부 <code>~/.orca/agent-hooks/claude-hook.sh</code> 하나를 가리키는 orca-cli 텔레메트리 훅. <b>교재의 3종은 훅 이벤트 전체 중 일부다.</b></li>
+      <li><code>SubagentStart</code>/<code>SubagentStop</code>은 <b>서브에이전트 전용</b>, <code>TeammateIdle</code>은 <b>에이전트 팀 전용</b> 이벤트다. → 4절로 이어짐</li>
+      <li><code>memory: project</code>가 쓸 자리 — 이 프로젝트의 <code>…/memory/</code> 디렉터리는 <b>존재하지만 비어 있다.</b></li>
+    </ul>
+  </div>
+
+  <h3 style="color:var(--orange)">여기서 얻은 평가</h3>
+  <div class="card" style="border-left:5px solid var(--orange)">
+    <p style="color:var(--ink);font-size:1rem">교재는 프론트매터를 <b>"완전 가이드"</b>로 길게 다루지만, 내 시스템에서 실측된 정의 <b>15개는 전부 3~4개 필드만</b> 쓴다. <code>humanize-korean</code> 9개는 <code>name</code>/<code>description</code>/<code>model</code> 3개, 공식 <code>code-reviewer.md</code>는 거기에 <code>color</code> 하나 더.<br><br>
+    즉 프론트매터가 정하는 건 <b>경계</b>(어떤 도구를, 어떤 모델로, 어떤 권한에서)일 뿐이고, 에이전트의 <b>행동을 결정하는 무게 중심은 본문(시스템 프롬프트)</b>에 있다. 진단가가 <b>"윤문하지 않는다"</b>를 <code>tools</code> 제한이 아니라 <b>본문 문장</b>으로 강제하는 게 그 증거다.<br><br>
+    → 필드 16개를 외우는 것보다 <b>본문에 명시적 금지 문장 한 줄</b>을 잘 쓰는 게 품질을 더 많이 좌우한다.</p>
+  </div>
+
+  <h3>skills 주입 — 순서가 곧 우선순위, 인데…</h3>
+  <pre>skills: moai-foundation-core, moai-lang-unified, moai-project-specific</pre>
+  <div class="warn">
+    <div class="m-label">(확인 필요) 원문이 스스로 모순된다</div>
+    <p><b>본문</b>: "프로젝트 특화 규칙을 마지막에 배치 … 마지막에 로드하여 <b>오버라이드</b>"<br>
+    <b>코드 주석</b>: "3. <code>moai-project-specific</code>(<b>낮은 우선순위</b>)"<br><br>
+    "마지막 = 오버라이드(강함)"와 "마지막 = 낮은 우선순위(약함)"는 반대 방향이다. 현재 공식 문서도 <code>skills</code>를 <b>"시작 시 컨텍스트에 프리로드"</b>라고만 설명해 순서-우선순위 관계를 명시하지 않는다 → <b>문서로 판정 불가. 단정하지 않는다.</b></p>
+  </div>
+  <div class="measured">
+    <div class="m-label">내 클로드 시스템에서 확인한 예시</div>
+    <ul>
+      <li><code>skills</code> 필드를 쓰는 에이전트 정의는 <b>내 시스템에 하나도 없다.</b></li>
+      <li>대신 이 저장소는 <b>에이전트 없이 스킬만으로</b> 같은 목적을 달성한다 — <code>.claude/skills/</code>에 9개, 서브에이전트 0개.</li>
+      <li><b>중요:</b> 서브에이전트 정의를 <b>에이전트 팀의 팀원으로</b> 쓰면 <code>skills</code>·<code>mcpServers</code> 프론트매터는 <b>적용되지 않는다</b>(공식 문서 명시). → 3절의 스킬 주입은 서브에이전트에선 되고, 팀원에선 안 된다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 4절 에이전트 팀 : 좌우 2열 대비 ===== -->
+<section>
+  <p class="kicker">4절 · 교재 밖 보강</p>
+  <h2>에이전트 팀 (agent teams)</h2>
+  <p class="lead">교재 1.6 <b>"다중 클로드 워크플로"</b>(터미널 여러 개를 사람이 띄우는 수동 패턴)가 현재 클로드 코드에 <b>정식 기능으로 흡수된 결과</b>다. 조율(태스크 분배·메시지·정리)을 <b>클로드 코드가 직접</b> 맡는다. 실험 기능이며 <b>기본 비활성</b>.</p>
+
+  <div class="versus">
+    <div class="vs-col vs-a">
+      <div class="vs-head">
+        <div class="vs-icon">◧</div>
+        <div><h4>서브에이전트</h4><div class="tag">한 세션 안에서 위임</div></div>
+      </div>
+      <ul class="vs-list">
+        <li><b>컨텍스트</b>자체 컨텍스트, 결과는 <b>호출자에게 반환</b></li>
+        <li><b>통신</b>호출자에게 결과 반환<br>(이름 붙은 것끼리는 메시지 가능)</li>
+        <li><b>조율</b><b>메인 에이전트가 전부 관리</b></li>
+        <li><b>적합</b>결과만 중요한 초점형 작업</li>
+        <li><b>토큰 비용</b><b>낮음</b> — 결과가 요약되어 메인에 돌아옴</li>
+      </ul>
+    </div>
+    <div class="vs-mid">VS</div>
+    <div class="vs-col vs-b">
+      <div class="vs-head">
+        <div class="vs-icon">◨</div>
+        <div><h4>에이전트 팀</h4><div class="tag">독립 세션들의 팀</div></div>
+      </div>
+      <ul class="vs-list">
+        <li><b>컨텍스트</b>자체 컨텍스트, <b>완전 독립</b></li>
+        <li><b>통신</b>팀원끼리 <b>직접 메시지</b> (메일박스)</li>
+        <li><b>조율</b><b>자기 조율</b> — 메시지 + 공유 태스크 리스트</li>
+        <li><b>적합</b><b>논의·협업</b>이 필요한 복잡한 작업</li>
+        <li><b>토큰 비용</b><b>높음</b> — 팀원 하나하나가 별도 클로드 인스턴스</li>
+      </ul>
+    </div>
+  </div>
+  <div class="vs-verdict">
+    <div class="vd vd-a">빠르고 초점 잡힌 워커가 <b>보고만</b> 하면 되면 → 서브에이전트</div>
+    <div class="vd-mid"></div>
+    <div class="vd vd-b">팀원끼리 <b>발견을 공유하고 서로 반박</b>해야 하면 → 에이전트 팀</div>
+  </div>
+
+  <h3>활성화 — 그리고 켤 때의 부작용</h3>
+  <pre><span class="c">// settings.json</span>
+{ "env": { "<span class="k">CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS</span>": "1" } }</pre>
+  <div class="warn">
+    <div class="m-label">켜는 순간 평범한 위임의 동작도 바뀐다</div>
+    <p>클로드는 나중에 메시지를 보내려고 서브에이전트에 <b>스스로 이름을 붙인다.</b> 에이전트 팀이 켜져 있으면 <b>이름 붙은 서브에이전트가 팀원으로 실행된다</b> — 팀을 요청한 적 없어도 팀이 생긴다. 서브에이전트는 결과를 반환하지만 <b>팀원은 "멈췄다"는 idle 알림만</b> 보내므로, <b>결과를 기다리는 흐름은 여기서 멈출 수 있다.</b> 되돌리려면 값을 <code>0</code>으로. (또한 팀원 생성은 <b>대화형 세션에서만</b> — <code>-p</code> 헤드리스·SDK에선 그냥 서브에이전트로 돈다.)</p>
+  </div>
+
+  <h3>구성 요소와 저장 위치</h3>
+  <div class="grid g2">
+    <div class="card"><h4>👤 팀 리드</h4><p>팀원을 스폰하고 작업을 조율하는 메인 세션. <b>고정</b> — 팀원을 리드로 승격할 수 없다.</p></div>
+    <div class="card"><h4>👥 팀원</h4><p>배정된 작업을 수행하는 <b>별도의 클로드 코드 인스턴스</b>. 리드의 대화 이력은 상속하지 않는다.</p></div>
+    <div class="card"><h4>📋 태스크 리스트</h4><p>공유 작업 목록. pending / in progress / completed 3상태 + <b>의존성</b>. claim은 <b>파일 잠금</b>으로 경쟁 조건 방지.</p></div>
+    <div class="card"><h4>📮 메일박스</h4><p>에이전트 간 메시징. 각자 JSON 파일 하나.</p></div>
+  </div>
+  <div class="tbl-wrap" style="margin-top:18px">
+    <table>
+      <thead><tr><th>무엇</th><th>경로</th><th>수명</th></tr></thead>
+      <tbody>
+        <tr><td>팀 설정</td><td><code>~/.claude/teams/{team-name}/config.json</code></td><td><b>세션 종료 시 삭제</b></td></tr>
+        <tr><td>메일박스</td><td><code>~/.claude/teams/{team-name}/inboxes/{agent-name}.json</code></td><td>팀 설정과 함께</td></tr>
+        <tr><td>태스크 리스트</td><td><code>~/.claude/tasks/{team-name}/</code></td><td><b>로컬에 잔존</b>·업로드 안 됨<br><code>cleanupPeriodDays</code> 적용</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="lead" style="margin-top:12px">팀 이름은 <code>session-</code> + 세션 ID 앞 8자리로 <b>자동 생성</b>된다. <code>config.json</code>은 런타임 상태(세션 ID·tmux pane ID)라 <b>손으로 고치거나 미리 만들면 안 된다.</b></p>
+
+  <h3>권한 — 여기가 가장 중요하다</h3>
+  <div class="grid g2">
+    <div class="card" style="border-top:4px solid var(--orange)">
+      <h4>상속되고, 되돌릴 수 없다</h4>
+      <p>팀원은 <b>리드의 권한 설정 그대로</b> 시작한다. 리드가 <code>--dangerously-skip-permissions</code>면 팀원 전부가 그렇다. <b>스폰 시점 팀원별 모드 지정은 불가.</b> 팀원의 권한 프롬프트는 <b>리드 세션에 뜬다.</b></p>
+    </div>
+    <div class="card" style="border-top:4px solid var(--green)">
+      <h4>에이전트 메시지 ≠ 사용자 승인</h4>
+      <p><code>SendMessage</code>로 온 메시지는 <b>"다른 클로드 세션에서 왔다"</b>고 알려진다. 팀원은 사용자 대신 승인할 수 없고, <b>거부당한 팀원이 다른 팀원에게 시켜 우회하는 것도 막힌다.</b> auto 모드에선 분류기가 배달 전 모든 메시지를 검사한다.</p>
+    </div>
+  </div>
+
+  <h3>품질 게이트 훅 · 운용 권고 · 한계</h3>
+  <div class="grid g3">
+    <div class="card">
+      <h4>🪝 훅 (exit code 2)</h4>
+      <p><code>TeammateIdle</code> — 계속 일하게<br><code>TaskCreated</code> — 생성 차단<br><code>TaskCompleted</code> — 완료 차단</p>
+    </div>
+    <div class="card">
+      <h4>📐 운용 권고</h4>
+      <p>팀 크기 <b>3~5명</b>부터. 독립 태스크 15개라도 3명이 좋은 출발점. 팀원당 태스크 5~6개. <b>파일 충돌 회피</b> — 팀원마다 다른 파일 집합. 입문은 <b>리서치·리뷰</b>부터.</p>
+    </div>
+    <div class="card">
+      <h4>🚧 한계 (실험 기능)</h4>
+      <p><code>/resume</code>·<code>/rewind</code>가 팀원 복원 못 함 · 태스크 상태 지연 · <b>세션당 팀 하나</b> · <b>중첩 팀 없음</b> · 리드 고정 · split pane은 tmux/iTerm2 필요</p>
+    </div>
+  </div>
+
+  <div class="measured">
+    <div class="m-label">내 클로드 시스템에서 확인한 예시 — 꺼져 있는데 흔적은 이미 있다</div>
+    <ul>
+      <li><b>에이전트 팀은 꺼져 있다.</b> <code>settings.json</code>에 <code>env</code> 블록 자체가 없고, 세션 환경변수에도 <code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS</code>가 없다.</li>
+      <li>그런데 <code>~/.claude/teams/</code> 디렉터리는 <b>존재하되 비어 있다</b> — 문서의 <b>"변수가 없으면 팀 디렉터리가 기록되지 않는다"</b>와 정확히 일치.</li>
+      <li><code>~/.claude/tasks/<b>session-4a0a2b53</b>/</code>가 남아 있다 — 팀 이름 <code>session-</code>+8자 규칙, <b>"태스크 디렉터리는 세션이 끝나도 남는다"</b>는 서술의 실물.</li>
+      <li><code>settings.json</code> 훅 목록에 <b><code>TeammateIdle</code>이 등록되어 있다</b> — 이 버전에 팀 전용 훅 이벤트가 실재한다는 증거.</li>
+      <li><b>이번엔 켜지 않기로 했다</b> — 부작용(이름 붙은 서브에이전트가 전부 팀원화)과 토큰 비용 때문. 위 세 흔적만으로 문서 서술은 검증된다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 차이 요약 ===== -->
+<section>
+  <p class="kicker">부록 A</p>
+  <h2>교재 ↔ 현재 버전(2.1.247) 차이</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>항목</th><th>교재</th><th>현재 (2026-08-27)</th></tr></thead>
+      <tbody>
+        <tr><td>내장 에이전트</td><td>general-purpose, Explore, Plan</td><td>+ <b><code>claude</code></b> (catch-all). Explore/Plan은 CLAUDE.md·git status 스킵</td></tr>
+        <tr><td>정의 파일 스코프</td><td>프로젝트 &gt; 사용자 &gt; 내장</td><td>관리형 &gt; <code>--agents</code> &gt; 프로젝트 &gt; 사용자 &gt; <b>플러그인</b></td></tr>
+        <tr><td>프론트매터</td><td>9개 필드</td><td>+ <code>maxTurns</code> <code>mcpServers</code> <code>background</code> <code>effort</code> <code>isolation</code> <code>color</code> <code>initialPrompt</code></td></tr>
+        <tr><td><code>permissionMode</code></td><td>5종</td><td>7종 (+ <code>auto</code>, <code>manual</code>)</td></tr>
+        <tr><td><code>model</code> 기본값</td><td>(명시 없음)</td><td><b><code>inherit</code></b></td></tr>
+        <tr><td>작업 재개</td><td>agentId + 명시적 resume</td><td><b>이름(name)</b> → <code>SendMessage</code>로 <b>자동 재개</b></td></tr>
+        <tr><td>다중 클로드 워크플로</td><td>터미널 수동 병렬 + 깃 워크트리</td><td><b>에이전트 팀</b>으로 정식화 / 워크트리는 <code>isolation: worktree</code>로 내장화</td></tr>
+        <tr><td>서브에이전트 트랜스크립트 경로</td><td><code>…/subagents/agent-{agentId}.jsonl</code></td><td>내 시스템에서 <b>미확인</b> (실행 이력 없음)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 정리 ===== -->
+<section>
+  <p class="kicker">정리</p>
+  <h2>가져갈 것 넷, 모르는 것 셋</h2>
+  <div class="closing">
+    <div class="close-item"><div class="n">1</div><div><h4>컨텍스트 격리가 전부다</h4><p>도구도 모델도 아니고, 자기 컨텍스트에서 일하고 <b>정제된 결과만</b> 돌려주는 것 — 그게 서브에이전트를 서브에이전트로 만든다.</p></div></div>
+    <div class="close-item"><div class="n">2</div><div><h4>프론트매터는 경계, 본문은 행동</h4><p>실측 정의 15개는 전부 3~4필드만 쓴다. 필드 16개보다 <b>본문의 명시적 금지 문장 한 줄</b>이 품질을 더 좌우한다.</p></div></div>
+    <div class="close-item"><div class="n">3</div><div><h4>교재의 "다중 클로드"는 이제 기능이다</h4><p>수동 터미널 병렬 → <b>에이전트 팀</b>. 깃 워크트리 → <code>isolation: worktree</code> 필드. 교재가 패턴으로 설명한 걸 제품이 흡수했다.</p></div></div>
+    <div class="close-item"><div class="n">4</div><div><h4>보고만 하면 서브, 논쟁해야 팀</h4><p>토큰은 팀원 수만큼 선형으로 늘고 조율 오버헤드는 그보다 빨리 는다. <b>3~5명, 리서치·리뷰부터.</b></p></div></div>
+  </div>
+
+  <h3 style="color:var(--orange)">발표에서 "모른다"고 말할 것</h3>
+  <div class="grid g3">
+    <div class="card" style="border-top:4px solid var(--orange)"><h4>skills 순서 방향</h4><p>원문이 스스로 모순("마지막=오버라이드" vs "마지막=낮은 우선순위"). 공식 문서로도 판정 불가.</p></div>
+    <div class="card" style="border-top:4px solid var(--orange)"><h4><code>(agent)</code> 표기</h4><p>현재 공식 문서 미확인. 실행 검증도 하지 않음.</p></div>
+    <div class="card" style="border-top:4px solid var(--orange)"><h4>트랜스크립트 경로</h4><p>6개 프로젝트 전체에서 해당 파일 없음. <b>단, 경로가 틀렸다는 근거는 아니다.</b></p></div>
+  </div>
+</section>
+
+<footer>
+  Chapter 4 · 서브에이전트 &nbsp;|&nbsp; 재윤 &nbsp;|&nbsp; 실측 기준일 2026-08-27 · claude 2.1.247<br>
+  근거: 교재 4장 · 내 클로드 시스템 실측 · 공식 문서 <code>code.claude.com/docs/en/agent-teams</code>, <code>/sub-agents</code>
+</footer>
+
+</main>
+<script>
+  (function(){
+    var bar=document.getElementById('progress');
+    function upd(){
+      var h=document.documentElement;
+      var max=h.scrollHeight-h.clientHeight;
+      bar.style.width=(max>0?(h.scrollTop/max*100):0)+'%';
+    }
+    document.addEventListener('scroll',upd,{passive:true});
+    window.addEventListener('resize',upd);
+    upd();
+  })();
+</script>
+</body>
+</html>
